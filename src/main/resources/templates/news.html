@@ -1,0 +1,38 @@
+<html layout:decorate="~{layout/base}">
+<div layout:fragment="content">
+    <!-- title -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">NEWS</h1>
+    </div>
+
+    <div class="container">
+        <!-- 뉴스 카드 목록-->
+        <div class="row" th:each="news, newsIndex : ${newsList}">
+            <div class="col mb-4">
+                <div class="card shadow mb-4">
+                    <div class="collapse show" th:id="'treadingNewsCard_' + ${newsIndex.index}">
+                        <!-- 뉴스 카드 헤더 -->
+                        <div class="card-header" th:text="${news.title}"></div>
+
+                        <!-- 뉴스 카드 본문 -->
+                        <div class="card-body">
+                            <p th:text="${news.content}"></p>
+                            <div class="btn bg-gray-100" th:text="${news.newspaperName}"></div>
+                            <a th:href="${news.url}" target="_blank" class="btn btn-secondary btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-info-circle"></i>
+                                </span>
+                                <span class="text">원문 보기</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+</div>
+</html>

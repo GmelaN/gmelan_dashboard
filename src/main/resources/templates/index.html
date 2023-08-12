@@ -1,0 +1,81 @@
+<html layout:decorate="~{layout/base}">
+<div layout:fragment="content">
+    <!-- title -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">NEWS</h1>
+    </div>
+
+    <div class="row">
+        <!-- Tasks Card Example -->
+        <div class="col mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">목표 달성까지
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">90% 남음</div>
+                                </div>
+                                <div class="col">
+                                    <div class="progress progress-sm mr-2">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: 10%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Requests Card Example -->
+        <div class="col mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                읽지 않은 뉴스</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">1</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col mb-4">
+        <div class="card shadow mb-4">
+        <a href="#treadingNewsCard" class="d-block card-header py-3" data-toggle="collapse"
+            role="button" aria-expanded="true" aria-controls="treadingNewsCard">
+            <h6 class="m-0 font-weight-bold text-primary">TRENDING NEWS: 잼버리 대회 잼민이 논란</h6>
+        </a>
+        <div class="collapse show" id="treadingNewsCard">
+            <div class="card-body">
+                <h4>잼버리 대회 잼민이 논란</h4>
+                <ul style="list-style-position: inside;">
+                    <li>절찬리에 진행되고 있는 잼버리 대회에 잼민이가 출현했다.</li>
+                    <li>잼민이는 출현한지 10분이 채 안되어 경찰에 붙잡혔다.</li>
+                    <li>잼민이는 절찬리 출신인 것으로 전해졌으며 부모에게 인계되었다.</li>
+                </ul>
+                <a href="#" class="btn btn-secondary btn-icon-split">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-info-circle"></i>
+                    </span>
+                    <span class="text">원문 보기</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</html>
