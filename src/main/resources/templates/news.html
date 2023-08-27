@@ -5,25 +5,29 @@
         <h1 class="h3 mb-0 text-gray-800">NEWS</h1>
     </div>
 
-    <div class="container">
+    <div class="container-fluid">
         <!-- 뉴스 카드 목록-->
-        <div class="row" th:each="news, newsIndex : ${newsList}">
-            <div class="col mb-4">
-                <div class="card shadow mb-4">
-                    <div class="collapse show" th:id="'treadingNewsCard_' + ${newsIndex.index}">
+        <div class="row">
+            <div class="col col-lg-2 col-md-4 col-sm-6 mb-4" th:each="news, newsIndex : ${newsList}">
+                <!-- 카드 -->
+                <div class="card shadow mb-4" th:id="'treadingNewsCard_' + ${newsIndex.index}">
+                    <div class="collapse show">
                         <!-- 뉴스 카드 헤더 -->
-                        <div class="card-header" th:text="${news.title}"></div>
+                        <div class="card-header">
+                            <span th:text="${news.newsTitle}"></span>
 
-                        <!-- 뉴스 카드 본문 -->
-                        <div class="card-body">
-                            <p th:text="${news.content}"></p>
-                            <div class="btn bg-gray-100" th:text="${news.newspaperName}"></div>
-                            <a th:href="${news.url}" target="_blank" class="btn btn-secondary btn-icon-split">
-                                <span class="icon text-white-50">
-                                    <i class="fas fa-info-circle"></i>
-                                </span>
-                                <span class="text">원문 보기</span>
+                            <!-- 원문 뉴스 링크 -->
+                            <a th:href="${news.newsUrl}" target="_blank" class="btn btn-info btn-light btn-sm">
+                                <i class="fas fa-info-circle fa-lg"></i>
                             </a>
+                            <!-- 원문 뉴스 신문사 -->
+                            <!-- <div class="btn bg-" th:text="${news.newspaperName}"></div> -->
+                            <span class="badge badge-pill float-right badge-dark"><span th:text="${news.newspaperName}"></span></span>
+                        </div>
+
+                        <!-- 연관된 뉴스 목록 -->
+                        <div class="card-body" th:each="article : ${news.relatedArticles}">
+                            <a th:href="${article.articleUrl}" th:text="${article.articleTitle}"></a>
                         </div>
                     </div>
                 </div>
@@ -32,7 +36,5 @@
     </div>
 </body>
 </html>
-
-
 </div>
 </html>
