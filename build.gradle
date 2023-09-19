@@ -7,9 +7,9 @@ plugins {
 group = 'com.dashboard'
 version = '0.0.1-SNAPSHOT'
 
-java {
-	sourceCompatibility = '20'
-}
+//java {
+//	sourceCompatibility = '20'
+//}
 
 configurations {
 	compileOnly {
