@@ -1,55 +1,87 @@
 <html layout:decorate="~{layout/base}">
-<div layout:fragment="content">
-    <!-- title -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">공지사항</h1>
-        <p>GNU, 진주청년플랫폼 공지사항 목록</p>
-    </div>
+    <div layout:fragment="content">
+        <!-- title -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">공지사항</h1>
+            <p>GNU, 진주청년플랫폼 공지사항 목록</p>
+        </div>
 
-    <div id="wrapper">
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+        <div id="wrapper">
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
 
-            <!-- Main Content -->
-            <div id="content">
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
-                    <!-- DataTales Example -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">공지사항</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>제목</th>
-                                            <th>원산지</th>
-                                            <th>게시일</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody th:each="notice, noticeIndex : ${noticeList}">
-                                        <tr>
-                                            <td>
-                                                <a th:href="${notice.link}" target="_blank" th:text="${notice.title}">
-                                                </a>
-                                            </td>
-                                            <td th:text="${notice.author}"></td>
-                                            <td th:text="${notice.formattedDate}"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                <!-- Main Content -->
+                <div id="content">
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
+                        <!-- DataTales Example -->
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">공지사항</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="noticeTable" class="table table-bordered" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>제목</th>
+                                                <th>원산지</th>
+                                                <th>게시일</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody th:each="notice : ${noticeList}">
+                                            <tr>
+                                                <td>
+                                                    <a th:href="${notice.link}" target="_blank" th:text="${notice.title}">
+                                                    </a>
+                                                </td>
+                                                <td th:text="${notice.author}"></td>
+                                                <td th:text="${notice.formattedDate}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <!-- /.container-fluid -->
                 </div>
-                <!-- /.container-fluid -->
+                <!-- End of Main Content -->
             </div>
-            <!-- End of Main Content -->
+            <!-- End of Content Wrapper -->
         </div>
-        <!-- End of Content Wrapper -->
+        <!-- End of Page Wrapper -->
     </div>
-    <!-- End of Page Wrapper -->
-</div>
+
+    <script>
+        $(document).ready(function() {
+            $("#noticeTable").DataTable({
+                order: [[ 0, "desc" ]],
+
+                language: {
+                    lengthMenu: "페이지당 _MENU_ 개의 목록 표시",
+                    search: "제목 검색:",
+                    zeroRecords: "검색된 항목이 없습니다.",
+                    info: "전체 _PAGES_ 페이지 중 _PAGE_째 페이지",
+                    infoEmpty: "항목이 비었습니다.",
+                    infoFiltered: "(전체 _MAX_개의 항목에서 검색)",
+                    paginate: {
+                        previous: "이전",
+                        next: "다음"
+                    }
+                }
+            });
+        });
+    </script>
+    
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        <!-- Page level plugins -->
+        <script src="sb-admin-2/vendor/datatables/jquery.dataTables.min.js"></script>
+        <script src="sb-admin-2/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    
+        <!-- Page level custom scripts -->
+        <script src="sb-admin-2/js/demo/datatables-demo.js"></script>
+
 </html>

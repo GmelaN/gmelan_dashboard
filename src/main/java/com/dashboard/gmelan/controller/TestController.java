@@ -15,22 +15,32 @@ import com.dashboard.gmelan.dataStructure.Notice;
 
 @Controller
 public class TestController {
-
     @Autowired
     private NewsService newsService;
     @Autowired
     private NoticeService noticeService;
 
-    @GetMapping(value="index")
+
+    /**
+     * Get index page.
+    */
+    @GetMapping(value="/")
     public String mainPage() {
         return "index";
     }
 
+
+    /**
+     * Get dashboard page.
+     */
     @GetMapping(value="/dashboard")
     public String dashBoard() {
         return "dashboard";
     }
 
+    /**
+     * Get news page.
+     */
     @GetMapping("news")
     public String news(Model model) {
         ArrayList<News> newsList = newsService.getGoogleNews();
@@ -39,6 +49,9 @@ public class TestController {
         return "news";
     }
 
+    /**
+     * Get notice page.
+     */
     @GetMapping("notice")
     public String notice(Model model) {
         ArrayList<Notice> noticeList = noticeService.getNotice();
