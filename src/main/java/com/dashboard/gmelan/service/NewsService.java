@@ -87,7 +87,7 @@ public class NewsService {
         }
 
         catch (Exception e) {
-            System.err.printf("getGoogleNews: there was an error while fetching news: %s", e.toString());
+            System.err.printf("getGoogleNews: there was an error while fetching news: %s", e);
         }
 
         return newsList;

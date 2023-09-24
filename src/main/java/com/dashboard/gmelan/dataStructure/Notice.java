@@ -1,14 +1,17 @@
 package com.dashboard.gmelan.dataStructure;
 
+import lombok.Getter;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Getter
 public class Notice {
-    private String title;
-    private String link;
-    private Date date;
-    private String content;
-    private String author;
+    private final String title;
+    private final String link;
+    private final Date date;
+    private final String content;
+    private final String author;
 
     public Notice(String title, String link, Date date, String content, String author) {
         this.title = title;
@@ -16,26 +19,6 @@ public class Notice {
         this.date = date;
         this.content = content;
         this.author = author;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public String getAuthor() {
-        return author;
     }
 
     public String getFormattedDate() {

@@ -8,7 +8,7 @@
     <div class="container-fluid">
         <!-- 뉴스 카드 목록-->
         <div class="row">
-            <div class="col col-lg-2 col-md-4 col-sm-6 mb-4" th:each="news, newsIndex : ${newsList}">
+            <div class="col-lg-6" th:each="news, newsIndex : ${newsList}">
                 <!-- 카드 -->
                 <div class="card shadow mb-4" th:id="'treadingNewsCard_' + ${newsIndex.index}">
                     <div class="collapse show">
@@ -22,12 +22,12 @@
                             </a>
                             <!-- 원문 뉴스 신문사 -->
                             <!-- <div class="btn bg-" th:text="${news.newspaperName}"></div> -->
-                            <span class="badge badge-pill float-right badge-dark"><span th:text="${news.newspaperName}"></span></span>
+                            <span class="badge badge-pill float-center badge-dark"><span th:text="${news.newspaperName}"></span></span>
                         </div>
 
                         <!-- 연관된 뉴스 목록 -->
                         <div class="card-body" th:each="article : ${news.relatedArticles}">
-                            <a th:href="${article.articleUrl}" th:text="${article.articleTitle}"></a>
+                            <a th:href="${article.articleUrl}" target="_blank" th:text="${article.articleTitle}"></a>
                         </div>
                     </div>
                 </div>
@@ -35,6 +35,30 @@
         </div>
     </div>
 </body>
-</html>
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const newsCards = document.querySelectorAll(".card"); // 모든 뉴스 카드 요소
+                const filterButtons = document.querySelectorAll(".badge-pill span"); // 언론사 버튼들
+
+                filterButtons.forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        const filterValue = this.getAttribute("data-filter"); // 선택한 언론사의 데이터 필터 값
+                        newsCards.forEach(function (card) {
+                            card.style.display = "none"; // 모든 뉴스 카드 숨김
+                        });
+                        if (filterValue === "all") {
+                            newsCards.forEach(function (card) {
+                                card.style.display = "block"; // 전체 뉴스 카드 표시
+                            });
+                        } else {
+                            const filteredCards = document.querySelectorAll(`[data-filter="${filterValue}"]`);
+                            filteredCards.forEach(function (card) {
+                                card.style.display = "block"; // 선택한 언론사 카드만 표시
+                            });
+                        }
+                    });
+                });
+            });
+    </script>
 </div>
 </html>
