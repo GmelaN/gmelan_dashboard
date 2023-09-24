@@ -3,8 +3,6 @@ package com.dashboard.gmelan.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dashboard.gmelan.dataStructure.Todo;
-import com.dashboard.gmelan.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +12,6 @@ import com.dashboard.gmelan.service.NewsService;
 import com.dashboard.gmelan.service.NoticeService;
 import com.dashboard.gmelan.dataStructure.News;
 import com.dashboard.gmelan.dataStructure.Notice;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 @Controller
@@ -23,8 +20,6 @@ public class TestController {
     private NewsService newsService;
     @Autowired
     private NoticeService noticeService;
-    @Autowired
-    private TodoService todoService;
 
 
     /**
@@ -66,13 +61,5 @@ public class TestController {
         return "notice";
     }
 
-    @GetMapping("todo_list")
-    public String todoList(Model model) {
-        Long userId = 0L;
 
-        List<Todo> todoList = todoService.getTodoListByUserId(userId);
-
-        model.addAttribute("todoList", todoList);
-        return "todoList";
-    }
 }

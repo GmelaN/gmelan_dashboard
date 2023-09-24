@@ -1,29 +1,33 @@
-package com.dashboard.gmelan.dataStructure;
+package com.dashboard.gmelan.Entities;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 
 
 @Entity
 @Table(name = "todo_list")
-@Getter @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long task_id;
 
     @Column(name = "user_id")
-    private Long user_id;
+    @Getter
+    private Long userId;
 
-    @Column(name = "task_data", columnDefinition = "JSON")
+    @Column(name = "task_data")
+    @Getter
     private String task_data;
 
     @Column(name = "created_at")
+    @Getter
     private Timestamp created_at;
+
+    @Column(name = "status")
+    @Getter
+    @Setter
+    private String status;
 }
