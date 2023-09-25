@@ -12,7 +12,8 @@ import java.sql.Timestamp;
 public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long task_id;
+    @Getter
+    private Long taskId;
 
     @Column(name = "user_id")
     @Getter
@@ -20,11 +21,13 @@ public class Todo {
 
     @Column(name = "task_data")
     @Getter
-    private String task_data;
+    @Setter
+    private String taskData;
 
     @Column(name = "created_at")
     @Getter
-    private Timestamp created_at;
+    @Setter
+    private Timestamp createdAt;
 
     @Column(name = "status")
     @Getter
