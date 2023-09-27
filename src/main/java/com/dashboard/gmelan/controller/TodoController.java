@@ -5,6 +5,7 @@ import com.dashboard.gmelan.service.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ import java.util.List;
  * @since 0.0.1-SNAPSHOT
  * @see <a href="velog.com/gmelan">author's blog</a>
  */
-@Service
+@Controller
 public class TodoController {
     @Autowired
     private TodoService todoService;
