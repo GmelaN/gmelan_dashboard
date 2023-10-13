@@ -29,11 +29,11 @@
                                         <th>게시일</th>
                                     </tr>
                                     </thead>
-                                    <tbody th:each="todo : ${todoList}">
+                                    <tbody th:each="todoEntity : ${todoEntityList}">
                                     <tr>
-                                        <td th:text="${todo.task_data}"></td>
-                                        <td th:text="${todo.user_id}"></td>
-                                        <td th:text="${todo.getCreated_at()}"></td>
+                                        <td th:text="${todoEntity.task_data}"></td>
+                                        <td th:text="${todoEntity.user_id}"></td>
+                                        <td th:text="${todoEntity.getCreated_at()}"></td>
                                     </tr>
                                     </tbody>
                                 </table>

@@ -1,4 +1,4 @@
-package com.dashboard.gmelan.Entities;
+package com.dashboard.gmelan.todo.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "todo_list")
-public class Todo {
+public class TodoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter

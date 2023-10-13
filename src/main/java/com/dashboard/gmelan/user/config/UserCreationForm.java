@@ -1,4 +1,4 @@
-package com.dashboard.gmelan.user;
+package com.dashboard.gmelan.user.config;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -14,7 +14,7 @@ public class UserCreationForm {
     private String username;
 
     @NotEmpty(message = "비밀번호는 필수 항목입니다.")
-    @Size(min=8, message = "비밀번호는 8자 이상이어야 합니다.")
+    @Size(min=8, max=255, message = "비밀번호는 8자 이상이어야 합니다.")
     private String password;
 
     @NotEmpty(message = "비밀번호 확인은 필수 항목입니다.")

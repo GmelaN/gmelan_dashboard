@@ -1,4 +1,4 @@
-package com.dashboard.gmelan.dataStructure;
+package com.dashboard.gmelan.news.entity;
 import lombok.Getter;
 
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
  *
  */
 @Getter
-public class News {
+public class NewsEntity {
     // Getter
     private final String newsTitle;
     private final List<Article> relatedArticles;
@@ -44,7 +44,7 @@ public class News {
      * @param publicationTime date of publication. not used yet.
      * @see <a href="https://velog.io/gmelan">author's blog</a>
      */
-    public News(String newsTitle, List<Article> relatedArticles, String newsUrl, String publicationTime, String newspaperName) {
+    public NewsEntity(String newsTitle, List<Article> relatedArticles, String newsUrl, String publicationTime, String newspaperName) {
         this.newsTitle = newsTitle;
         this.relatedArticles = relatedArticles;
         this.newsUrl = newsUrl;

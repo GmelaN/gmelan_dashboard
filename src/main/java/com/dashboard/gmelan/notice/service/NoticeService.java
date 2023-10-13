@@ -1,12 +1,12 @@
-package com.dashboard.gmelan.service;
+package com.dashboard.gmelan.notice.service;
 
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+import com.dashboard.gmelan.notice.entity.NoticeEntity;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,12 +14,8 @@ import org.jsoup.select.Elements;
 
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
-import com.dashboard.gmelan.dataStructure.Notice;
 
 
 /**
@@ -48,21 +44,21 @@ public class NoticeService {
      * @see <a href="https://gnu.ac.kr">Gyeongsang National University</a>
      * @return ArrayList&lt;Notice&gt;: A list of Notice objects containing information about notices.
      */
-    public ArrayList<Notice> getNotice() {
-        ArrayList<Notice> noticeList = new ArrayList<>();
+    public ArrayList<NoticeEntity> getNotice() {
+        ArrayList<NoticeEntity> noticeEntityList = new ArrayList<>();
 
-        noticeList.addAll(getJinjuNotices());
-        noticeList.addAll(getGNUNotices());
+        noticeEntityList.addAll(getJinjuNotices());
+        noticeEntityList.addAll(getGNUNotices());
 
-        noticeList.sort(new Comparator<Notice>() {
+        noticeEntityList.sort(new Comparator<NoticeEntity>() {
             @Override
-            public int compare(Notice notice1, Notice notice2) {
+            public int compare(NoticeEntity noticeEntity1, NoticeEntity noticeEntity2) {
                 // multify -1 for descending order
-                return -1 * notice1.getDate().compareTo(notice2.getDate());
+                return -1 * noticeEntity1.getDate().compareTo(noticeEntity2.getDate());
             }
         });
 
-        return noticeList;
+        return noticeEntityList;
     }
 
     
@@ -74,9 +70,9 @@ public class NoticeService {
      * @return ArrayList&lt;Notice&gt;: A list of Notice objects containing information of Jinju Youth Platform notices.
      * @see <a href="https://young.jinju.go.kr/young/">Jinju Youth Platform</a>
      */
-    private ArrayList<Notice> getJinjuNotices() {
+    private ArrayList<NoticeEntity> getJinjuNotices() {
         String url = "https://young.jinju.go.kr/young/board/notice/list/0";
-        ArrayList<Notice> jinjuNoticeList = new ArrayList<>();
+        ArrayList<NoticeEntity> jinjuNoticeListEntity = new ArrayList<>();
 
         // get duration for fetching
         Date fetchEndDate = new Date();
@@ -135,8 +131,8 @@ public class NoticeService {
                 // only fetch contents uploaded in target duration
                 // contents without date information also included
                 if(date.after(fetchStartDate) || date.equals(new Date(0))) {
-                    Notice notice = new Notice(title, link, date, title, "진주청년플랫폼");
-                    jinjuNoticeList.add(notice);
+                    NoticeEntity noticeEntity = new NoticeEntity(title, link, date, title, "진주청년플랫폼");
+                    jinjuNoticeListEntity.add(noticeEntity);
                 }
             }
 
@@ -144,7 +140,7 @@ public class NoticeService {
             System.err.printf("getJinjuNotices: there was an error while fetching notices: %s", e.toString());
         }
 
-        return jinjuNoticeList;
+        return jinjuNoticeListEntity;
     }
 
 
@@ -157,8 +153,8 @@ public class NoticeService {
      * @see <a href="https://gnu.ac.kr">Gyeongsang National University</a>
      * @see <a href="https://cs.gnu.ac.kr">GNU Computer Science dept.</a>
      */
-    private ArrayList<Notice> getGNUNotices() {
-        ArrayList<Notice> GNUNoticeList = new ArrayList<>();
+    private ArrayList<NoticeEntity> getGNUNotices() {
+        ArrayList<NoticeEntity> GNUNoticeListEntity = new ArrayList<>();
 
         // get target duration
         Date fetchEndDate = new Date();
@@ -225,11 +221,11 @@ public class NoticeService {
                 // only fetch contents within target duration
                 // contents without date information also included
                 if(date.after(fetchStartDate) || date.equals(new Date(0))) {
-                    Notice notice = new Notice(title, link, date, title, author);
-                    GNUNoticeList.add(notice);
+                    NoticeEntity noticeEntity = new NoticeEntity(title, link, date, title, author);
+                    GNUNoticeListEntity.add(noticeEntity);
                 }
             }
         }
-        return GNUNoticeList;
+        return GNUNoticeListEntity;
     }
 }

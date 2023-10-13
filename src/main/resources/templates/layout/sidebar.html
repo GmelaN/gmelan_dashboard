@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <!-- Sidebar -->
     <ul th:fragment="sidebar" class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
@@ -34,9 +34,21 @@
 
         <!-- Nav Item - Register -->
         <li class="nav-item">
-            <a class="nav-link" th:href="@{/user/signup}">REGISTER</a>
+            <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/signup}">REGISTER</a>
+            <i class="fas fa-fw fa-user-alt"></i>
         </li>
 
+        <!-- Nav Item - Login -->
+        <li class="nav-item">
+            <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/login}">LOGIN</a>
+            <i class="fas fa-fw fa-user-alt"></i>
+        </li>
+
+        <!-- Nav Item - Logout -->
+        <li class="nav-item">
+            <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">LOGOUT</a>
+            <i class="fas fa-fw fa-user-alt"></i>
+        </li>
 
         <!-- Divider -->
         <hr class="sidebar-divider my-0">
@@ -47,7 +59,7 @@
 
         <!-- Nav Item - TO-DO -->
         <li class="nav-item">
-            <a class="nav-link active" href="todo">
+            <a class="nav-link active" href="todoEntity">
                 <i class="fas fa-fw fa-check"></i>
                 <span>TO-DO List</span></a>
         </li>
@@ -68,7 +80,7 @@
 
         <!-- Nav Item - Notice -->
         <li class="nav-item">
-            <a class="nav-link active" href="notice">
+            <a class="nav-link active" href="noticeEntity">
                 <i class="fas fa-fw fa-paperclip"></i>
                 <span>Notice</span></a>
         </li>

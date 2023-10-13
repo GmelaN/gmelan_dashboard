@@ -1,4 +1,4 @@
-package com.dashboard.gmelan.user;
+package com.dashboard.gmelan.user.config;
 
 import jakarta.persistence.*;
 import lombok.Getter;

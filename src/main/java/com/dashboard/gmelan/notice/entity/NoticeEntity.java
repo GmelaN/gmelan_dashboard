@@ -1,4 +1,4 @@
-package com.dashboard.gmelan.dataStructure;
+package com.dashboard.gmelan.notice.entity;
 
 import lombok.Getter;
 
@@ -6,14 +6,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Getter
-public class Notice {
+public class NoticeEntity {
     private final String title;
     private final String link;
     private final Date date;
     private final String content;
     private final String author;
 
-    public Notice(String title, String link, Date date, String content, String author) {
+    public NoticeEntity(String title, String link, Date date, String content, String author) {
         this.title = title;
         this.link = link;
         this.date = date;
