@@ -1,7 +1,7 @@
-<html th:layout:decorate="~{layout/base}">
-    <div th:layout:fragment="content">
-        <form th:action="@{/user/signup}" th:object="${userCreateForm}" method="post">
-            <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+<html layout:decorate="~{layout/base}">
+    <div layout:fragment="content">
+        <form th:action="@{/user/signup}" th:object="${userCreationForm}" method="post">
+            <div th:replace="~{layout/form_errors :: formErrorsFragment}"></div>
             <div class="mb-3">
                 <label for="username" class="form-label">사용자ID</label>
                 <input type="text" th:field="*{username}" class="form-control">

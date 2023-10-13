@@ -1,91 +1,3 @@
-<!--<html layout:decorate="~{layout/base}">-->
-<!--<div layout:fragment="content">-->
-<!--  &lt;!&ndash; title &ndash;&gt;-->
-<!--  <div class="d-sm-flex align-items-center justify-content-between mb-4">-->
-<!--    <h1 class="h3 mb-0 text-gray-800">TO-DO 리스트</h1>-->
-<!--    <p>GNU, 진주청년플랫폼 공지사항 목록</p>-->
-<!--  </div>-->
-
-<!--  <div id="wrapper">-->
-<!--    &lt;!&ndash; Content Wrapper &ndash;&gt;-->
-<!--    <div id="content-wrapper" class="d-flex flex-column">-->
-
-<!--      &lt;!&ndash; Main Content &ndash;&gt;-->
-<!--      <div id="content">-->
-<!--        &lt;!&ndash; Begin Page Content &ndash;&gt;-->
-<!--        <div class="container-fluid">-->
-<!--          &lt;!&ndash; DataTales Example &ndash;&gt;-->
-<!--          <div class="card shadow mb-4">-->
-<!--            <div class="card-header py-3">-->
-<!--              <h6 class="m-0 font-weight-bold text-primary">공지사항</h6>-->
-<!--            </div>-->
-<!--            <div class="card-body">-->
-<!--              <div class="table-responsive">-->
-<!--                <table id="noticeTable" class="table table-bordered" width="100%" cellspacing="0">-->
-<!--                  <thead>-->
-<!--                  <tr>-->
-<!--                    <th>제목</th>-->
-<!--                    <th>상태</th>-->
-<!--                    <th>등록일</th>-->
-<!--                  </tr>-->
-<!--                  </thead>-->
-<!--                  <tbody th:each="todo : ${todoList}">-->
-<!--                  <tr>-->
-<!--                    <td th:text="${todo.task_data}"></td>-->
-<!--                    <td th:text="${todo.status}"></td>-->
-<!--                    <td th:text="${todo.created_at}"></td>-->
-<!--                  </tr>-->
-<!--                  </tbody>-->
-<!--                </table>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        &lt;!&ndash; /.container-fluid &ndash;&gt;-->
-<!--      </div>-->
-<!--      &lt;!&ndash; End of Main Content &ndash;&gt;-->
-<!--    </div>-->
-<!--    &lt;!&ndash; End of Content Wrapper &ndash;&gt;-->
-<!--  </div>-->
-<!--  &lt;!&ndash; End of Page Wrapper &ndash;&gt;-->
-<!--</div>-->
-
-<!--<script>-->
-<!--  $(document).ready(function() {-->
-<!--    $("#noticeTable").DataTable({-->
-<!--      order: [[ 0, "desc" ]],-->
-
-<!--      language: {-->
-<!--        lengthMenu: "페이지당 _MENU_ 개의 목록 표시",-->
-<!--        search: "제목 검색:",-->
-<!--        zeroRecords: "검색된 항목이 없습니다.",-->
-<!--        info: "전체 _PAGES_ 페이지 중 _PAGE_째 페이지",-->
-<!--        infoEmpty: "항목이 비었습니다.",-->
-<!--        infoFiltered: "(전체 _MAX_개의 항목에서 검색)",-->
-<!--        paginate: {-->
-<!--          previous: "이전",-->
-<!--          next: "다음"-->
-<!--        }-->
-<!--      }-->
-<!--    });-->
-<!--  });-->
-<!--</script>-->
-
-<!--&lt;!&ndash; jquery &ndash;&gt;-->
-<!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
-<!--<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>-->
-<!--&lt;!&ndash; Page level plugins &ndash;&gt;-->
-<!--<script src="sb-admin-2/vendor/datatables/jquery.dataTables.min.js"></script>-->
-<!--<script src="sb-admin-2/vendor/datatables/dataTables.bootstrap4.min.js"></script>-->
-
-<!--&lt;!&ndash; Page level custom scripts &ndash;&gt;-->
-<!--<script src="sb-admin-2/js/demo/datatables-demo.js"></script>-->
-
-<!--</html>-->
-
-
-
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -97,6 +9,14 @@
 <body>
 <div class="container">
   <h1 class="mt-5">TO-DO 리스트</h1>
+
+  <!-- Add Todo Form -->
+  <form th:action="@{/todos/{userId}/createTodo(userId=${userId})}" method="post" th:object="${todoEntity}">
+    <label for="task">Task:</label>
+    <input type="text" id="task" name="task" field="" required>
+    <button type="submit">Add Todo</button>
+  </form>
+
   <table class="table mt-3">
     <thead>
     <tr>
@@ -108,12 +28,12 @@
     </thead>
     <tbody>
     <!-- Thymeleaf를 사용하여 할 일 목록을 동적으로 표시 -->
-    <tr th:each="todo : ${todoList}">
-      <td th:text="${todo.task_data}"></td>
-      <td th:text="${todo.status}"></td>
-      <td th:text="${todo.created_at}"></td>
+    <tr th:each="todoEntity : ${todoEntityList}">
+      <td th:text="${todoEntity.taskData}"></td>
+      <td th:text="${todoEntity.status}"></td>
+      <td th:text="${todoEntity.createdAt}"></td>
       <td>
-        <button class="btn btn-danger" onclick="deleteTodo(${todo.task_id})">삭제</button>
+        <button class="btn btn-danger" th:onclick="'deleteTodo('+ ${todoEntity.taskId} + ')'">삭제</button>
       </td>
     </tr>
     </tbody>
@@ -126,8 +46,32 @@
 <script>
   // 할 일 삭제 함수
   function deleteTodo(taskId) {
-    // 여기에서 taskId를 사용하여 서버로 할 일 삭제 요청을 보내고 화면에서 해당 항목을 제거하는 로직을 추가할 수 있습니다.
+    // 서버로 DELETE 요청을 보내는 XMLHttpRequest 또는 fetch를 사용할 수 있습니다.
+    // 이 예제에서는 fetch를 사용합니다.
+
+    // 삭제 요청을 보낼 URL을 지정합니다. taskId는 삭제하려는 항목의 고유 ID입니다.
+    const url = `/todos/delete/${taskId}`;
+
+    // DELETE 요청을 보냅니다.
+    fetch(url, {
+      method: 'DELETE',
+    })
+            .then(response => {
+                if (response.ok) {
+                    // 삭제가 성공적으로 완료되었을 때의 처리
+                    console.log('Todo deleted successfully');
+                    // 삭제한 항목을 화면에서 제거하는 등의 추가 작업을 수행할 수 있습니다.
+                } else {
+                    // 삭제에 실패한 경우의 처리
+                    console.error('Failed to delete todoEntity');
+                }
+            })
+            .catch(error => {
+                // 네트워크 오류 또는 기타 오류 처리
+                console.error('Error:', error);
+            });
   }
+
 </script>
 </body>
 </html>

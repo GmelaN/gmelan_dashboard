@@ -29,14 +29,14 @@
                                                 <th>게시일</th>
                                             </tr>
                                         </thead>
-                                        <tbody th:each="notice : ${noticeList}">
+                                        <tbody th:each="noticeEntity : ${noticeEntityList}">
                                             <tr>
                                                 <td>
-                                                    <a th:href="${notice.link}" target="_blank" th:text="${notice.title}">
+                                                    <a th:href="${noticeEntity.link}" target="_blank" th:text="${noticeEntity.title}">
                                                     </a>
                                                 </td>
-                                                <td th:text="${notice.author}"></td>
-                                                <td th:text="${notice.formattedDate}"></td>
+                                                <td th:text="${noticeEntity.author}"></td>
+                                                <td th:text="${noticeEntity.formattedDate}"></td>
                                             </tr>
                                         </tbody>
                                     </table>

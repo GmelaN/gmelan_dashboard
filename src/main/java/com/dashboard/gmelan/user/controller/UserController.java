@@ -1,14 +1,16 @@
-package com.dashboard.gmelan.user;
+package com.dashboard.gmelan.user.controller;
 
+import com.dashboard.gmelan.user.config.UserCreationForm;
+import com.dashboard.gmelan.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Arrays;
 
@@ -25,7 +27,9 @@ public class UserController {
 
 
     @PostMapping("/signup")
-    public String signup(@Valid UserCreationForm userCreationForm, BindingResult bindingResult) {
+    public String signup(Model model, @Valid UserCreationForm userCreationForm, BindingResult bindingResult) {
+        model.addAttribute("userCreationForm", userCreationForm);
+
         if (bindingResult.hasErrors()) {
             return "signup_form";
         }
@@ -56,11 +60,11 @@ public class UserController {
             bindingResult.reject("signupFailed", "사용자를 등록하는 중 오류가 발생했습니다: " + e.getMessage());
             return "signup_form";
         }
-
         return "redirect:/";
     }
 
-
-
-
+    @GetMapping("/login")
+    public String login() {
+        return "login_form";
+    }
 }

@@ -1,6 +1,8 @@
-package com.dashboard.gmelan.user;
+package com.dashboard.gmelan.user.service;
 
 
+import com.dashboard.gmelan.user.config.UserEntity;
+import com.dashboard.gmelan.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,4 +26,6 @@ public class UserService {
 
         return user;
     }
+
+//    public UserEntity get
 }

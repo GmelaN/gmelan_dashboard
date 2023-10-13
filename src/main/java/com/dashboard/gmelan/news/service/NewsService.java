@@ -1,7 +1,8 @@
-package com.dashboard.gmelan.service;
+package com.dashboard.gmelan.news.service;
 
 import java.util.ArrayList;
 
+import com.dashboard.gmelan.news.entity.NewsEntity;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.Jsoup;
@@ -9,8 +10,7 @@ import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.dashboard.gmelan.dataStructure.News;
-import com.dashboard.gmelan.dataStructure.News.Article;
+import com.dashboard.gmelan.news.entity.NewsEntity.Article;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
@@ -33,14 +33,14 @@ public class NewsService {
      * <p>if there's no contents on fetched feed, returns an empty list.</p>
      *
      * @return ArrayList&lt;News&gt; newsList
-     * @see com.dashboard.gmelan.dataStructure.News <p>News DataStructure class</p>
+     * @see NewsEntity <p>News DataStructure class</p>
      */
-    public ArrayList<News> getGoogleNews() {
+    public ArrayList<NewsEntity> getGoogleNews() {
         // URL 주소
         final String FEED_URL = "https://news.google.com/rss?hl=ko&gl=KR&ceid=KR:ko";
 
         // 반환할 뉴스 리스트
-        ArrayList<News> newsList = new ArrayList<>();
+        ArrayList<NewsEntity> newsEntityList = new ArrayList<>();
 
         try {
             // RestTemplate으로 RSS 피드 불러오기
@@ -49,7 +49,7 @@ public class NewsService {
             
             // 불러온 피드의 내용이 없는 경우 빈 뉴스 리스트 반환
             if (rssXml == null) {
-                return newsList;
+                return newsEntityList;
             }
 
             // RSS feed 파싱
@@ -82,7 +82,7 @@ public class NewsService {
                 String newspaperName = titleData.length > 1 ? titleData[1] : "Google News";
 
                 // 뉴스 데이터를 객체로 생성하여 리스트에 추가
-                newsList.add(new News(title, contents, url, publicationTime, newspaperName));
+                newsEntityList.add(new NewsEntity(title, contents, url, publicationTime, newspaperName));
             }
         }
 
@@ -90,6 +90,6 @@ public class NewsService {
             System.err.printf("getGoogleNews: there was an error while fetching news: %s", e);
         }
 
-        return newsList;
+        return newsEntityList;
     }
 }
