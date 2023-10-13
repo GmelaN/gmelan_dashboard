@@ -38,9 +38,8 @@ public class TodoController {
         return "todo";
     }
 
-
     @PostMapping("/todos/{userId}/createTodo")
-    public ResponseEntity<TodoEntity> createTodo(@PathVariable Long userId, @RequestBody TodoEntity todoEntity) {
+    public ResponseEntity<TodoEntity> createTodo(@PathVariable Long userId, @RequestParam TodoEntity todoEntity) {
         // TodoService를 사용하여 새로운 할 일 항목을 생성하고 저장합니다.
         TodoEntity createdTodoEntity = null;
 
