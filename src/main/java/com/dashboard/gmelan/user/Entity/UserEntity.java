@@ -1,10 +1,10 @@
 package com.dashboard.gmelan.user.Entity;
 
-//import com.dashboard.gmelan.reference.entity.ReferenceEntity;
-//import com.dashboard.gmelan.todo.entity.TodoEntity;
+import com.dashboard.gmelan.todo.entity.TodoEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
@@ -13,41 +13,68 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "user")
+@Table(name = "user", schema = "dashboard")
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserEntity {
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "username", nullable = false, unique = true, columnDefinition = "varchar(15)")
+    @Id
+    @Column(name = "id")
+    private long id;
+    @Basic
+    @Column(name = "permission_id")
+    private long permissionId;
+    @Basic
+    @Column(name = "username")
     private String username;
-
-    @Column(name = "password", nullable = false, columnDefinition = "varchar(128)")
+    @Basic
+    @Column(name = "password")
     private String password;
-
-    @Column(name = "email", nullable = false, unique = true, columnDefinition = "varchar(30)")
+    @Basic
+    @Column(name = "email")
     private String email;
-
-    @Column(name = "created_at", nullable = false, columnDefinition = "DATETIME")
-    private Timestamp created_at;
-
-    @Column(name = "is_available", nullable = false, columnDefinition = "default true")
-    private boolean is_available;
-
-    @Column(name = "type", nullable = false, columnDefinition = "varchar(10) default 'IN_APP'")
+    @Basic
+    @Column(name = "created_at")
+    private Timestamp createdAt;
+    @Basic
+    @Column(name = "is_available")
+    private boolean isAvailable;
+    @Basic
+    @Column(name = "type")
     private String type;
 
-    // mapped columns: user, permission, JWT_token, reference
-//    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL)
-//    private List<TodoEntity> todos;
-//
-//    @OneToMany(mappedBy = "jwt_token", cascade = CascadeType.ALL)
-//    private List<JWTTokenEntity> JWTTokens;
-//
-//    @OneToOne(mappedBy = "permission", cascade = CascadeType.ALL)
-//    private UserPermissionEntity permission;
-//
-//    @OneToMany(mappedBy = "reference", cascade = CascadeType.ALL)
-//    private List<ReferenceEntity> reference;
+    @OneToMany(mappedBy = "user")
+    private List<TodoEntity> todos;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserEntity that = (UserEntity) o;
+
+        if (id != that.id) return false;
+        if (permissionId != that.permissionId) return false;
+        if (isAvailable != that.isAvailable) return false;
+        if (username != null ? !username.equals(that.username) : that.username != null) return false;
+        if (password != null ? !password.equals(that.password) : that.password != null) return false;
+        if (email != null ? !email.equals(that.email) : that.email != null) return false;
+        if (createdAt != null ? !createdAt.equals(that.createdAt) : that.createdAt != null) return false;
+        if (type != null ? !type.equals(that.type) : that.type != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (int) (permissionId ^ (permissionId >>> 32));
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
+        result = 31 * result + (isAvailable ? 1 : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        return result;
+    }
 }
