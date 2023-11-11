@@ -5,7 +5,7 @@
                         `content`	TEXT	NULL	DEFAULT '내용 없음',
                         `url`	VARCHAR(50)	NULL,
                         `fetched_at`	DATETIME	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
-                        `category`	VARCHAR(20)	NOT NULL	DEFAULT '분류 없음'	COMMENT '뉴스 카테고리',
+                        `category`	VARCHAR(20)	NOT NULL  DEFAULT '분류 없음'	COMMENT '뉴스 카테고리',
                         `company`	VARCHAR(20)	NULL,
                         `reporter`	VARCHAR(20)	NULL
 );
@@ -51,7 +51,7 @@ CREATE TABLE `media` (
 
 CREATE TABLE `todo-category` (
                                  `id`	BIGINT	NOT NULL	AUTO_INCREMENT PRIMARY KEY,
-                                 `name`	VARCHAR(20)	NOT NULL	UNIQUE,
+                                 `name`	VARCHAR(20)	NOT NULL	UNIQUE DEFAULT '분류 없음',
                                  `created_at`	DATETIME	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -93,7 +93,7 @@ CREATE TABLE `JWT_token` (
 
 CREATE TABLE `reference-category` (
                                       `id`	BIGINT	NOT NULL	AUTO_INCREMENT PRIMARY KEY,
-                                      `name`	VARCHAR(20)	NOT NULL	UNIQUE,
+                                      `name`	VARCHAR(20)	NOT NULL	UNIQUE DEFAULT '분류 없음',
                                       `created_at`	DATETIME	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
