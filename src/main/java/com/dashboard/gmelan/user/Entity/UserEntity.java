@@ -1,6 +1,6 @@
 package com.dashboard.gmelan.user.Entity;
 
-import com.dashboard.gmelan.todo.entity.TodoEntity;
+import com.dashboard.gmelan.todo.entity.Todo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,7 +44,7 @@ public class UserEntity {
     private String type;
 
     @OneToMany(mappedBy = "user")
-    private List<TodoEntity> todos;
+    private List<Todo> todos;
 
     @Override
     public boolean equals(Object o) {

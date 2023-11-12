@@ -1,23 +1,26 @@
-﻿CREATE TABLE `news` (
+﻿CREATE DATABASE `dashboard` CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE dashboard;
+
+CREATE TABLE `news` (
                         `id`	BIGINT	NOT NULL	AUTO_INCREMENT PRIMARY KEY,
-                        `title`	VARCHAR(30)	NOT NULL	DEFAULT '제목',
-                        `published_at`	DATETIME	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
+                        `title`	VARCHAR(30)	NOT NULL	DEFAULT '제목 없음',
+                        `published_at`	TIMESTAMP 	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
                         `content`	TEXT	NULL	DEFAULT '내용 없음',
-                        `url`	VARCHAR(50)	NULL,
-                        `fetched_at`	DATETIME	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
+                        `url`	VARCHAR(50)	NULL DEFAULT 'URL 정보 없음',
                         `category`	VARCHAR(20)	NOT NULL  DEFAULT '분류 없음'	COMMENT '뉴스 카테고리',
-                        `company`	VARCHAR(20)	NULL,
-                        `reporter`	VARCHAR(20)	NULL
+                        `company`	VARCHAR(20)	NULL DEFAULT '언론사 정보 없음',
+                        `reporter`	VARCHAR(20)	NULL DEFAULT '기자 정보 없음',
+                        `fetched_at`	TIMESTAMP	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `notice` (
                           `id`	BIGINT	NOT NULL	AUTO_INCREMENT PRIMARY KEY,
-                          `title`	VARCHAR(30)	NOT NULL	DEFAULT '제목',
-                          `published_at`	DATETIME	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
+                          `title`	VARCHAR(30)	NOT NULL	DEFAULT '제목 없음',
+                          `published_at`	TIMESTAMP	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
                           `content`	TEXT	NULL	DEFAULT '내용 없음',
-                          `url`	VARCHAR(50)	NULL,
-                          `agency`	VARCHAR(20)	NULL,
-                          `fetched_at`	DATETIME	NOT NULL	DEFAULT CURRENT_TIMESTAMP
+                          `url`	VARCHAR(50)	NULL DEFAULT 'URL 정보 없음',
+                          `agency`	VARCHAR(20)	NULL DEFAULT '기관 정보 없음',
+                          `fetched_at`	TIMESTAMP	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `user` (
@@ -26,33 +29,36 @@ CREATE TABLE `user` (
                         `username`	VARCHAR(15)	NOT NULL	UNIQUE,
                         `password`	VARCHAR(128)	NOT NULL	COMMENT 'hashed string',
                         `email`	VARCHAR(30)	NOT NULL	UNIQUE COMMENT 'email',
-                        `created_at`	DATETIME	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
                         `is_available`	BOOLEAN	NOT NULL	DEFAULT true,
-                        `type`	VARCHAR(10)	NOT NULL	DEFAULT 'IN_APP'	COMMENT '인앱, 카카오, 페이스북'
+                        `type`	VARCHAR(10)	NOT NULL	DEFAULT 'IN_APP'	COMMENT 'IN_APP, KAKAO, FACEBOOK, ...',
+                        `created_at`	TIMESTAMP	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
+                        `updated_at`	TIMESTAMP	NULL
+
 );
 
 CREATE TABLE `reference` (
                              `id`	BIGINT	NOT NULL	AUTO_INCREMENT PRIMARY KEY,
                              `user_id`	BIGINT	NOT NULL,
                              `reference_category_id`	BIGINT	NOT NULL,
-                             `title`	VARCHAR(30)	NOT NULL	DEFAULT '제목',
+                             `title`	VARCHAR(30)	NOT NULL	DEFAULT '제목 없음',
                              `content`	TEXT	NULL	DEFAULT '내용 없음',
-                             `url`	VARCHAR(50)	NULL,
-                             `created_at`	DATETIME	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
-                             `updated_at`	DATETIME	NULL
+                             `url`	VARCHAR(50)	NULL DEFAULT 'URL 정보 없음',
+                             `created_at`	TIMESTAMP	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
+                             `updated_at`	TIMESTAMP	NULL
 );
 
 CREATE TABLE `media` (
                          `id`	BIGINT	NOT NULL	AUTO_INCREMENT PRIMARY KEY,
-                         `url`	VARCHAR(50)	NULL,
-                         `uploaded_at`	DATETIME	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
-                         `type`	VARCHAR(10)	NULL
+                         `url`	VARCHAR(50)	NULL DEFAULT 'URL 정보 없음',
+                         `type`	VARCHAR(10)	NULL DEFAULT '타입 정보 없음',
+                         `created_at`	TIMESTAMP	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
+                         `updated_at`	TIMESTAMP	NULL
 );
 
 CREATE TABLE `todo-category` (
                                  `id`	BIGINT	NOT NULL	AUTO_INCREMENT PRIMARY KEY,
-                                 `name`	VARCHAR(20)	NOT NULL	UNIQUE DEFAULT '분류 없음',
-                                 `created_at`	DATETIME	NOT NULL	DEFAULT CURRENT_TIMESTAMP
+                                 `name`	VARCHAR(20)	NOT NULL	UNIQUE DEFAULT '기본 분류',
+                                 `created_at`	TIMESTAMP	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `todo-media` (
@@ -79,22 +85,24 @@ CREATE TABLE `reference-media` (
                                    `media_id`	BIGINT	NOT NULL
 );
 
-CREATE TABLE `permission` (
+CREATE TABLE `user-permission` (
                               `id`	BIGINT	NOT NULL	AUTO_INCREMENT PRIMARY KEY,
-                              `permission`	VARCHAR(10)	NOT NULL	DEFAULT 'USER'
+                              `permission`	VARCHAR(10)	NOT NULL UNIQUE	DEFAULT 'USER',
+                              `created_at`	TIMESTAMP	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `JWT_token` (
                              `id`	BIGINT	NOT NULL	AUTO_INCREMENT PRIMARY KEY,
                              `user_id`	BIGINT	NOT NULL,
                              `token`	VARCHAR(255)	NOT NULL	UNIQUE,
-                             `expire_at`	DATETIME	NOT NULL
+                             `created_at`	TIMESTAMP	NOT NULL	DEFAULT CURRENT_TIMESTAMP,
+                             `expire_at`	TIMESTAMP	NOT NULL
 );
 
 CREATE TABLE `reference-category` (
                                       `id`	BIGINT	NOT NULL	AUTO_INCREMENT PRIMARY KEY,
                                       `name`	VARCHAR(20)	NOT NULL	UNIQUE DEFAULT '분류 없음',
-                                      `created_at`	DATETIME	NOT NULL	DEFAULT CURRENT_TIMESTAMP
+                                      `created_at`	TIMESTAMP	NOT NULL	DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `todo` (
@@ -103,85 +111,18 @@ CREATE TABLE `todo` (
                         `todo_category_id`	BIGINT	NOT NULL,
                         `title`	VARCHAR(30)	NOT NULL	DEFAULT '제목',
                         `content`	TEXT	NULL	DEFAULT '내용 없음',
-                        `start_date`	DATETIME	NULL,
-                        `end_date`	DATETIME	NULL,
-                        `url`	VARCHAR(50)	NULL
+                        `url`	VARCHAR(50)	NULL default 'URL 정보 없음',
+                        `start_date`	TIMESTAMP	NULL,
+                        `end_date`	TIMESTAMP	NULL,
+                        `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        `updated_at` TIMESTAMP NULL
+
 );
 
-ALTER TABLE `news` ADD CONSTRAINT `PK_NEWS` PRIMARY KEY (
-                                                         `id`
-    );
-
-ALTER TABLE `notice` ADD CONSTRAINT `PK_NOTICE` PRIMARY KEY (
-                                                             `id`
-    );
-
-ALTER TABLE `user` ADD CONSTRAINT `PK_USER` PRIMARY KEY (
-                                                         `id`,
-                                                         `permission_id`
-    );
-
-ALTER TABLE `reference` ADD CONSTRAINT `PK_REFERENCE` PRIMARY KEY (
-                                                                   `id`,
-                                                                   `user_id`,
-                                                                   `reference_category_id`
-    );
-
-ALTER TABLE `media` ADD CONSTRAINT `PK_MEDIA` PRIMARY KEY (
-                                                           `id`
-    );
-
-ALTER TABLE `todo-category` ADD CONSTRAINT `PK_TODO_CATEGORY` PRIMARY KEY (
-                                                                           `id`
-    );
-
-ALTER TABLE `todo-media` ADD CONSTRAINT `PK_TODO-MEDIA` PRIMARY KEY (
-                                                                     `id`,
-                                                                     `media_id`,
-                                                                     `todo_id`
-    );
-
-ALTER TABLE `news-media` ADD CONSTRAINT `PK_NEWS-MEDIA` PRIMARY KEY (
-                                                                     `id`,
-                                                                     `media_id`,
-                                                                     `news_id`
-    );
-
-ALTER TABLE `notice-media` ADD CONSTRAINT `PK_NOTICE-MEDIA` PRIMARY KEY (
-                                                                         `id`,
-                                                                         `media_id`,
-                                                                         `notice_id`
-    );
-
-ALTER TABLE `reference-media` ADD CONSTRAINT `PK_REFERENCE-MEDIA` PRIMARY KEY (
-                                                                               `id`,
-                                                                               `reference_id`,
-                                                                               `media_id`
-    );
-
-ALTER TABLE `permission` ADD CONSTRAINT `PK_PERMISSION` PRIMARY KEY (
-                                                                     `id`
-    );
-
-ALTER TABLE `JWT_token` ADD CONSTRAINT `PK_JWT_TOKEN` PRIMARY KEY (
-                                                                   `id`,
-                                                                   `user_id`
-    );
-
-ALTER TABLE `reference-category` ADD CONSTRAINT `PK_REFERENCE_CATEGORY` PRIMARY KEY (
-                                                                                     `id`
-    );
-
-ALTER TABLE `todo` ADD CONSTRAINT `PK_TODO` PRIMARY KEY (
-                                                         `id`,
-                                                         `user_id`,
-                                                         `todo_category_id`
-    );
-
-ALTER TABLE `user` ADD CONSTRAINT `FK_permission_TO_user_1` FOREIGN KEY (
+ALTER TABLE `user` ADD CONSTRAINT `FK_user_permission_TO_user_1` FOREIGN KEY (
                                                                          `permission_id`
     )
-    REFERENCES `permission` (
+    REFERENCES `user-permission` (
                              `id`
         );
 
