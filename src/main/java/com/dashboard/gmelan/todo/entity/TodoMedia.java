@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "todo-media", schema = "dashboard")
-public class TodoMediaEntity {
+public class TodoMedia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -29,7 +29,7 @@ public class TodoMediaEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TodoMediaEntity that = (TodoMediaEntity) o;
+        TodoMedia that = (TodoMedia) o;
 
         if (id != that.id) return false;
         if (mediaId != that.mediaId) return false;

@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "todo-category", schema = "dashboard")
-public class TodoCategoryEntity {
+public class TodoCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -28,14 +28,14 @@ public class TodoCategoryEntity {
     private Timestamp createdAt;
 
 //    @OneToMany(mappedBy = "todo-category")
-//    private List<TodoEntity> todos;
+//    private List<Todo> todos;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TodoCategoryEntity that = (TodoCategoryEntity) o;
+        TodoCategory that = (TodoCategory) o;
 
         if (id.equals(that.id)) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;

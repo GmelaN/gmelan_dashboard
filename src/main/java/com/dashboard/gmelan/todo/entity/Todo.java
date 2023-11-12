@@ -15,20 +15,11 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "todo", schema = "dashboard")
-public class TodoEntity {
+public class Todo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
     private long id;
-//    @Basic
-//    @Column(name = "user_id")
-//    private long userId;
-//    @Basic
-//    @Column(name = "todo_category_id")
-//    private long todoCategoryId;
-
-    @Transient
-    private String categoryName; // for createTodo argument only
 
     @Basic
     @Column(name = "title")
@@ -37,14 +28,23 @@ public class TodoEntity {
     @Column(name = "content")
     private String content;
     @Basic
+    @Column(name = "url")
+    private String url;
+    @Basic
     @Column(name = "start_date")
     private Timestamp startDate;
     @Basic
     @Column(name = "end_date")
     private Timestamp endDate;
     @Basic
-    @Column(name = "url")
-    private String url;
+    @Column(name = "created_at")
+    private Timestamp createdAt;
+    @Basic
+    @Column(name = "updated_at")
+    private Timestamp updatedAt;
+
+    @Transient
+    private String categoryName;
 
     @ManyToOne
     @JoinColumn(name="user_id")
@@ -52,14 +52,14 @@ public class TodoEntity {
 
     @ManyToOne
     @JoinColumn(name="todo_category_id")
-    private TodoCategoryEntity todoCategoryEntity;
+    private TodoCategory todoCategoryEntity;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TodoEntity that = (TodoEntity) o;
+        Todo that = (Todo) o;
 
         if (id != that.id) return false;
         if (title != null ? !title.equals(that.title) : that.title != null) return false;
@@ -69,7 +69,6 @@ public class TodoEntity {
         if (url != null ? !url.equals(that.url) : that.url != null) return false;
         if (user != null ? !user.equals(that.user) : that.user != null) return false;
         if (todoCategoryEntity != null ? !todoCategoryEntity.equals(that.todoCategoryEntity) : that.todoCategoryEntity != null) return false;
-        if(categoryName != null ? !categoryName.equals(that.categoryName) : that.categoryName != null) return false;
 
         return true;
     }
@@ -84,7 +83,6 @@ public class TodoEntity {
         result = 31 * result + (url != null ? url.hashCode() : 0);
         result = 31 * result + (user != null ? user.hashCode() : 0);
         result = 31 * result + (todoCategoryEntity != null ? todoCategoryEntity.hashCode() : 0);
-        result = 31 * result + (categoryName != null ? categoryName.hashCode() : 0);
         return result;
     }
 }
