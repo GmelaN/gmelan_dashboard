@@ -1,6 +1,7 @@
 package com.dashboard.gmelan.todo.controller;
 
 import com.dashboard.gmelan.todo.entity.Todo;
+import com.dashboard.gmelan.todo.entity.TodoCategory;
 import com.dashboard.gmelan.todo.repository.TodoRepository;
 import com.dashboard.gmelan.user.Entity.UserEntity;
 import com.dashboard.gmelan.user.service.UserService;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import com.dashboard.gmelan.todo.service.TodoService;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -42,20 +46,44 @@ public class TodoController {
     }
 
     @PostMapping("/todos/{userId}/createTodo")
-    public ResponseEntity<Todo> createTodo(@PathVariable Long userId, @RequestParam Todo todo) {
-        UserEntity user = userService.findByUserId(userId);
+    public String createTodo(
+            @PathVariable Long userId,
+            @RequestParam(name = "title") String title,
+            @RequestParam(name = "content") String content,
+            @RequestParam(name = "url") String url,
+            @RequestParam(name = "startDate") String startDate,
+            @RequestParam(name = "endDate") String endDate,
+            @RequestParam(name = "category") String category
 
-        // TodoService를 사용하여 새로운 할 일 항목을 생성하고 저장합니다.
-        Todo createdTodoEntity = null;
+    ) {
+        UserEntity user = userService.findByUserId(userId);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-mm-dd");
+
+        // _Todo 엔티티에 파라미터 값들 대입
+        Todo newTodo = new Todo();
+        newTodo.setUser(user);
+        newTodo.setTitle(title);
+        if(!content.isEmpty()) newTodo.setContent(content);
+        if(!url.isEmpty()) newTodo.setUrl(url);
+        newTodo.setTodoCategoryEntity(todoService.getOrCreateCategory(category));
 
         try {
-            createdTodoEntity = todoService.createTodo(todo, todo.getCategoryName());
+            if(!startDate.isEmpty()) newTodo.setStartDate(new Timestamp(dateFormatter.parse(startDate).getTime()));
+            if(!endDate.isEmpty()) newTodo.setEndDate(new Timestamp(dateFormatter.parse(endDate).getTime()));
+        } catch(ParseException e) {
+            System.err.println("createTodo: date parsing error.");
+            return "";
+        }
+        
+        // 만들어진 todo 저장
+        try {
+            todoService.createTodo(newTodo);
         } catch(Exception e) {
             System.err.println("There was an error while creating new to-do task.");
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+            return "";
         }
 
-        return new ResponseEntity<>(createdTodoEntity, HttpStatus.CREATED);
+        return "redirect:/todos/{userId}";
     }
 
     @GetMapping("/todos/json/{userId}")
@@ -72,7 +100,7 @@ public class TodoController {
         }
     }
 
-    // 권한 확인 필요
+    // todo: 권한 확인 필요
     @PutMapping("/todos/update/{taskId}")
     public ResponseEntity<Todo> updateTodo(@PathVariable Long taskId, Todo updatedTodoEntity) {
         // TODO: 사용자 권한 검사
@@ -87,7 +115,7 @@ public class TodoController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    // 권한 확인 필요
+    // todo: 권한 확인 필요
     @DeleteMapping("/todos/delete/{taskId}")
     public ResponseEntity<Void> deleteTodo(@PathVariable Long taskId) {
         // TODO: userId로 현재 로그인 한 사용자가 맞는지 검사

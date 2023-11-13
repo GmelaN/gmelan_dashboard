@@ -1,77 +1,104 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>TO-DO 리스트</title>
-  <!-- Bootstrap CSS 추가 -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-<div class="container">
-  <h1 class="mt-5">TO-DO 리스트</h1>
+<html layout:decorate="~{layout/base}">
+<div layout:fragment="content">
+  <!-- title -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">TO-DO 리스트</h1>
+  </div>
 
-  <!-- Add Todo_ Form -->
-  <form th:action="@{/todos/{userId}/createTodo(userId=${userId})}" method="post" th:object="${todoEntity}">
-    <label for="task">Task:</label>
-    <input type="text" id="task" name="task" field="" required>
-    <button type="submit">Add Todo</button>
-  </form>
+  <div class="container-fluid">
+    <!-- Add Todo_ Form -->
+    <form th:action="@{/todos/{userId}/createTodo(userId=${userId})}" method="post">
+      <label for="title">할 일 제목:</label>
+      <input type="text" id="title" name="title" required>
 
-  <table class="table mt-3">
-    <thead>
-    <tr>
-      <th>제목</th>
-      <th>상태</th>
-      <th>등록일</th>
-      <th>작업</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- Thymeleaf를 사용하여 할 일 목록을 동적으로 표시 -->
-    <tr th:each="todoEntity : ${todoEntityList}">
-      <td th:text="${todoEntity.taskData}"></td>
-      <td th:text="${todoEntity.status}"></td>
-      <td th:text="${todoEntity.createdAt}"></td>
-      <td>
-        <button class="btn btn-danger" th:onclick="'deleteTodo('+ ${todoEntity.taskId} + ')'">삭제</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</div>
-<!-- Bootstrap 및 jQuery 스크립트 추가 -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
-  // 할 일 삭제 함수
-  function deleteTodo(taskId) {
-    // 서버로 DELETE 요청을 보내는 XMLHttpRequest 또는 fetch를 사용할 수 있습니다.
-    // 이 예제에서는 fetch를 사용합니다.
+      <label for="content">내용:</label>
+      <input type="text" id="content" name="content">
 
-    // 삭제 요청을 보낼 URL을 지정합니다. taskId는 삭제하려는 항목의 고유 ID입니다.
-    const url = `/todos/delete/${taskId}`;
+      <label for="url">URL:</label>
+      <input type="text" id="url" name="url">
 
-    // DELETE 요청을 보냅니다.
-    fetch(url, {
-      method: 'DELETE',
-    })
-            .then(response => {
+      <label for="startDate">시작일:</label>
+      <input type="date" id="startDate" name="startDate">
+
+      <label for="endDate">종료일:</label>
+      <input type="date" id="endDate" name="endDate">
+
+      <label for="category">카테고리:</label>
+      <input type="text" id="category" name="category">
+
+      <button type="submit" class="btn btn-info btn-light btn-sm">
+        <i class="fas fa-plus-circle fa-lg"></i> Add Todo
+      </button>
+    </form>
+
+  </div>
+
+
+    <div class="row mt-3">
+      <div class="col-lg-12">
+        <div class="card shadow mb-4">
+          <div class="collapse show">
+            <div class="card-body">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>제목</th>
+                  <th>내용</th>
+                  <th>URL</th>
+                  <th>카테고리</th>
+                  <th>등록일</th>
+                  <th>시작일</th>
+                  <th>마감일</th>
+                  <th>작업</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(todoList)}">
+                  <!-- todo: 입력값이 NULL인 경우 처리-->
+                  <td colspan="4">할 일이 없습니다.</td>
+                </tr>
+
+                <tr th:each="todo : ${todoList}">
+                  <td th:text="${todo.getTitle()}"></td>
+                  <td th:text="${todo.getContent()}"></td>
+                  <td th:text="${todo.getUrl()}"></td>
+                  <td th:text="${todo.getTodoCategoryEntity().getName()}"></td>
+                  <td th:text="${todo.getStartDate().toString()}"></td>
+                  <td th:text="${todo.getEndDate().toString()}"></td>
+                  <td th:text="${todo.getCreatedAt().toString()}"></td>
+
+                  <td>
+                    <button class="btn btn-danger" th:onclick="'deleteTodo('+ ${todo.taskId} + ')'">삭제</button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 할 일 삭제 함수
+    function deleteTodo(taskId) {
+      const url = `/todos/delete/${taskId}`;
+
+      fetch(url, {
+        method: 'DELETE',
+      })
+              .then(response => {
                 if (response.ok) {
-                    // 삭제가 성공적으로 완료되었을 때의 처리
-                    console.log('Todo deleted successfully');
-                    // 삭제한 항목을 화면에서 제거하는 등의 추가 작업을 수행할 수 있습니다.
+                  console.log('Todo deleted successfully');
                 } else {
-                    // 삭제에 실패한 경우의 처리
-                    console.error('Failed to delete todoEntity');
+                  console.error('Failed to delete todoEntity');
                 }
-            })
-            .catch(error => {
-                // 네트워크 오류 또는 기타 오류 처리
+              })
+              .catch(error => {
                 console.error('Error:', error);
-            });
-  }
-
-</script>
-</body>
+              });
+    }
+  </script>
+</div>
 </html>
