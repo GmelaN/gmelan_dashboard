@@ -5,6 +5,7 @@ import com.dashboard.gmelan.todo.entity.Todo;
 import com.dashboard.gmelan.todo.repository.TodoCategoryRepository;
 import com.dashboard.gmelan.todo.repository.TodoRepository;
 import com.dashboard.gmelan.user.Entity.UserEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -24,6 +25,7 @@ public class TodoService {
 
 
     /* 할 일 조회 */
+    @Transactional(readOnly=true)
     public List<Todo> getActiveTodos(UserEntity user) {
         Timestamp now = new Timestamp(System.currentTimeMillis());
 
@@ -38,12 +40,14 @@ public class TodoService {
         return activeTodos;
     }
 
+    @Transactional(readOnly=true)
     public List<Todo> getStaticTodos(UserEntity user) {
         List<Todo> staticTodos = todoRepository.findByUserIdAndStartDateIsNullAndEndDateIsNull(user.getId());
 
         return staticTodos;
     }
 
+    @Transactional(readOnly=true)
     public List<Todo> getActiveTodosByCategory(UserEntity user, String category) {
         List<Todo> result = new ArrayList<>();
 
@@ -58,6 +62,7 @@ public class TodoService {
         return result;
     }
 
+    @Transactional(readOnly=true)
     public List<Todo> getAllTodos(UserEntity user) {
         // 사용자의 모든 리스트를 가져온다.
         return todoRepository.findByUserId(user.getId());
@@ -65,21 +70,16 @@ public class TodoService {
 
 
     /* 할 일 만들기 */
-    public Todo createTodo(Todo todo, String category) {
+    @Transactional
+    public Todo createTodo(Todo todo) {
         if(!isValidDate(todo.getStartDate(), todo.getEndDate()))
             throw new IllegalArgumentException("invalid date range detected.");
-
-        // 새 할 일에 있는 카테고리가 신규 카테고리인지 확인
-        TodoCategory categoryEntity = getOrCreateCategory(category);
-
-        // 이제 할 일을 담아도 됨
-        todo.setTodoCategoryEntity(categoryEntity);
 
         return todoRepository.save(todo);
     }
 
     /* 할 일 제거하기 */
-
+    @Transactional
     public boolean deleteTodo(Long taskId) {
         // delete시 해당 todoCategory를 참조하는 _todo가 하나도 없는 경우 category도 함께 제거
 
@@ -106,6 +106,7 @@ public class TodoService {
 
 
     /* 할 일 수정하기 */
+    @Transactional
     public Todo updateTodo(Long taskId, Todo updatedTodoEntity) {
         // 먼저 해당 todoEntity가 있는지 보자.
         Todo targetTodo = todoRepository.findById(taskId)
@@ -137,7 +138,7 @@ public class TodoService {
     /**
      * 카테고리가 신규 카테고리인지 확인하고, 신규 카테고리라면 DB에 추가
      */
-    private TodoCategory getOrCreateCategory(String categoryName) {
+    public TodoCategory getOrCreateCategory(String categoryName) {
         if(categoryName == null || categoryName.isBlank()) categoryName = "분류 없음";
 
         // 먼저 카테고리가 신규 카테고리인지 확인해보자.
