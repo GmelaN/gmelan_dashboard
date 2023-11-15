@@ -12,10 +12,13 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "todo-category", schema = "dashboard")
 public class TodoCategory {
+    public TodoCategory(String name) {
+        this.name = name;
+    }
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -24,7 +27,7 @@ public class TodoCategory {
     @Column(name = "name", unique = true)
     private String name;
     @Basic
-    @Column(name = "created_at")
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdAt;
 
 //    @OneToMany(mappedBy = "todo-category")
