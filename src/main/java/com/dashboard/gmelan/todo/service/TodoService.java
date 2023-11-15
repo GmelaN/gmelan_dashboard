@@ -47,14 +47,23 @@ public class TodoService {
         return staticTodos;
     }
 
+    @Transactional(readOnly = true)
+    public List<Todo> getCompletedTodos(UserEntity user) {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+
+        List<Todo> completedTodos = todoRepository.findByUserIdAndEndDateIsBefore(user.getId(), now);
+
+        return  completedTodos;
+    }
+
     @Transactional(readOnly=true)
-    public List<Todo> getActiveTodosByCategory(UserEntity user, String category) {
+    public List<Todo> getTodosByCategory(UserEntity user, String category) {
         List<Todo> result = new ArrayList<>();
 
         // 먼저 카테고리의 ID를 가져온다.
         TodoCategory s = todoCategoryRepository.findByName(category);
         if(s == null) {
-            return result;
+            return null;
         }
 
         // 그 다음 가져온 ID들을 기반으로 리스트를 조회한다.
@@ -139,20 +148,21 @@ public class TodoService {
      * 카테고리가 신규 카테고리인지 확인하고, 신규 카테고리라면 DB에 추가
      */
     public TodoCategory getOrCreateCategory(String categoryName) {
-        if(categoryName == null || categoryName.isBlank()) categoryName = "분류 없음";
+        if(categoryName == null || categoryName.isBlank()) {
+            categoryName = "분류 없음";
+        }
 
         // 먼저 카테고리가 신규 카테고리인지 확인해보자.
         TodoCategory categoryEntity = todoCategoryRepository.findByName(categoryName);
 
         // 신규 카테고리인 경우 null일 것임
         if (categoryEntity == null) {
-            categoryEntity = new TodoCategory();
+            categoryEntity = new TodoCategory(categoryName);
 
             // 신규 카테고리를 카테고리 테이블에 저장
-            categoryEntity.setName(categoryName);
-            categoryEntity.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             todoCategoryRepository.save(categoryEntity);
 
+            categoryEntity = todoCategoryRepository.findByName(categoryName);
             return categoryEntity;
         }
         return categoryEntity;

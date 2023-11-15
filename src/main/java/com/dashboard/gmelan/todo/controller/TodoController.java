@@ -1,11 +1,9 @@
 package com.dashboard.gmelan.todo.controller;
 
 import com.dashboard.gmelan.todo.entity.Todo;
-import com.dashboard.gmelan.todo.entity.TodoCategory;
-import com.dashboard.gmelan.todo.repository.TodoRepository;
 import com.dashboard.gmelan.user.Entity.UserEntity;
 import com.dashboard.gmelan.user.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,12 +26,16 @@ import java.util.List;
  */
 @Controller
 public class TodoController {
-    @Autowired
-    private TodoService todoService;
-    @Autowired
-    private UserService userService;
+    private final TodoService todoService;
+    private final UserService userService;
+
+    public TodoController(TodoService todoService, UserService userService) {
+        this.todoService = todoService;
+        this.userService = userService;
+    }
 
 
+    // _todo 페이지
     @GetMapping("/todos/{userId}")
     public String showTodoPage(@PathVariable Long userId, Model model) {
         UserEntity user = userService.findByUserId(userId);
@@ -45,6 +47,7 @@ public class TodoController {
         return "todo";
     }
 
+    // 새 할 일 만들기
     @PostMapping("/todos/{userId}/createTodo")
     public String createTodo(
             @PathVariable Long userId,
@@ -65,33 +68,112 @@ public class TodoController {
         newTodo.setTitle(title);
         if(!content.isEmpty()) newTodo.setContent(content);
         if(!url.isEmpty()) newTodo.setUrl(url);
-        newTodo.setTodoCategoryEntity(todoService.getOrCreateCategory(category));
 
         try {
             if(!startDate.isEmpty()) newTodo.setStartDate(new Timestamp(dateFormatter.parse(startDate).getTime()));
             if(!endDate.isEmpty()) newTodo.setEndDate(new Timestamp(dateFormatter.parse(endDate).getTime()));
         } catch(ParseException e) {
             System.err.println("createTodo: date parsing error.");
-            return "";
+            return "error";
+        } catch (IllegalArgumentException e) {
+            System.err.println("createTodo: illegal argument passed.");
+            return "error";
         }
         
-        // 만들어진 todo 저장
+        // 카테고리가 지정되지 않음 -> 기본 카테고리 지정하기
+        if(category.isEmpty()) {
+            // 일자 정보가 있다면 카테고리 지정 가능
+            Timestamp startTimestamp = newTodo.getStartDate();
+            Timestamp endTimestamp = newTodo.getEndDate();
+            Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+            
+            category = "분류 없음"; // 기본값
+
+            if(startTimestamp != null) { // 시작 날짜가 기입되어 있는 경우
+                if(startTimestamp.before(currentTimestamp)) category = "진행 중"; // 시작이 현재보다 앞
+                else category = "진행 전"; // 시작이 현재보다 뒤
+            }
+            if(endTimestamp != null && endTimestamp.before(currentTimestamp)) category = "진행 완료"; // 종료가 현재보다 앞
+            if(endTimestamp != null && endTimestamp.after(currentTimestamp)) category = "진행 중"; // 종료가 현재보다 뒤
+        }
+        newTodo.setTodoCategoryEntity(todoService.getOrCreateCategory(category));
+        
+        // 만들어진 _todo 저장
         try {
             todoService.createTodo(newTodo);
         } catch(Exception e) {
             System.err.println("There was an error while creating new to-do task.");
-            return "";
+            return "error";
         }
-
         return "redirect:/todos/{userId}";
     }
 
-    @GetMapping("/todos/json/{userId}")
-    public ResponseEntity<List<Todo>> getTodosById(@PathVariable Long userId) {
+    // 모든 할 일 조회
+    @GetMapping("/todos/json/{userId}/all")
+    public ResponseEntity<List<Todo>> getAllTodosById(@PathVariable Long userId) {
         UserEntity user = userService.findByUserId(userId);
 
         // TodoService를 사용하여 특정 ID의 할 일 항목을 가져옵니다.
         List<Todo> todoList = todoService.getAllTodos(user);
+
+        if (todoList != null) {
+            return new ResponseEntity<>(todoList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // 진행 중인 할 일 조회
+    @GetMapping("/todos/json/{userId}/active")
+    public ResponseEntity<List<Todo>> getActiveTodosById(@PathVariable Long userId) {
+        UserEntity user = userService.findByUserId(userId);
+
+        // TodoService를 사용하여 특정 ID의 할 일 항목을 가져옵니다.
+        List<Todo> todoList = todoService.getActiveTodos(user);
+
+        if (todoList != null) {
+            return new ResponseEntity<>(todoList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // 정적 할 일 조회
+    @GetMapping("/todos/json/{userId}/static")
+    public ResponseEntity<List<Todo>> getStaticTodosById(@PathVariable Long userId) {
+        UserEntity user = userService.findByUserId(userId);
+
+        // TodoService를 사용하여 특정 ID의 할 일 항목을 가져옵니다.
+        List<Todo> todoList = todoService.getStaticTodos(user);
+
+        if (todoList != null) {
+            return new ResponseEntity<>(todoList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // 완료한 할 일 조회
+    @GetMapping("/todos/json/{userId}/completed")
+    public ResponseEntity<List<Todo>> getCompletedTodosById(@PathVariable Long userId) {
+        UserEntity user = userService.findByUserId(userId);
+
+        // TodoService를 사용하여 특정 ID의 할 일 항목을 가져옵니다.
+        List<Todo> todoList = todoService.getCompletedTodos(user);
+
+        if (todoList != null) {
+            return new ResponseEntity<>(todoList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    // 카테고리별 할 일 조회
+    @GetMapping("/todos/json/{userId}/{category}")
+    public ResponseEntity<List<Todo>> getTodosbyIdAndCategory(@PathVariable Long userId, @PathVariable String category) {
+        UserEntity user = userService.findByUserId(userId);
+
+        List<Todo> todoList = todoService.getTodosByCategory(user, category);
 
         if (todoList != null) {
             return new ResponseEntity<>(todoList, HttpStatus.OK);
@@ -119,7 +201,8 @@ public class TodoController {
     @DeleteMapping("/todos/delete/{taskId}")
     public ResponseEntity<Void> deleteTodo(@PathVariable Long taskId) {
         // TODO: userId로 현재 로그인 한 사용자가 맞는지 검사
-        // TodoService를 사용하여 특정 ID의 할 일 항목을 삭제합니다.
+        // TODO: 403 forbidden 에러 처리
+
         boolean isDeleted = todoService.deleteTodo(taskId);
         if (isDeleted) {
             return new ResponseEntity<>(HttpStatus.OK);

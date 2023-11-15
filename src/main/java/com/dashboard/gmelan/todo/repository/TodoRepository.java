@@ -20,7 +20,7 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
 
     // 3. 사용자별, end_date가 없거나 end_date가 현재보다 작은 todo만 조회하는 기능
     List<Todo> findByUserIdAndStartDateIsNullOrStartDateBefore(long userId, Timestamp now);
-    List<Todo> findByUserIdAndEndDateIsNullOrEndDateIsAfter(long userId, Timestamp now);
+    List<Todo> findByUserIdAndEndDateIsBefore(long userId, Timestamp now);
 
     // 4. 사용자별 특정 카테고리에 있는 _todo 리스트 조회 기능
     List<Todo> findByUserIdAndTodoCategoryEntity(long userId, TodoCategory categoryEntity);

@@ -11,23 +11,25 @@
             <div class="col-lg-6" th:each="news, newsIndex : ${newsList}">
                 <!-- 카드 -->
                 <div class="card shadow mb-4" th:id="'treadingNewsCard_' + ${newsIndex.index}">
+                    불러온 일자:<p th:text="${news.getFetchedAt()}"></p>
+                    게재 일자: <p th:text="${news.getPublishedAt()}"></p>
+
                     <div class="collapse show">
                         <!-- 뉴스 카드 헤더 -->
                         <div class="card-header">
-                            <span th:text="${news.newsTitle}"></span>
+                            <span th:text="${news.getTitle()}"></span>
 
                             <!-- 원문 뉴스 링크 -->
-                            <a th:href="${news.newsUrl}" target="_blank" class="btn btn-info btn-light btn-sm">
+                            <a th:href="${news.getUrl() != null ? news.getUrl() : 'URL 없음'}" target="_blank" class="btn btn-info btn-light btn-sm">
                                 <i class="fas fa-info-circle fa-lg"></i>
                             </a>
                             <!-- 원문 뉴스 신문사 -->
-                            <!-- <div class="btn bg-" th:text="${news.newspaperName}"></div> -->
-                            <span class="badge badge-pill float-center badge-dark"><span th:text="${news.newspaperName}"></span></span>
+                            <span class="badge badge-pill float-center badge-dark"><span th:text="${news.getCompany() != null ? news.getCompany() : '언론사 정보 없음'}"></span></span>
                         </div>
 
-                        <!-- 연관된 뉴스 목록 -->
-                        <div class="card-body" th:each="article : ${news.relatedArticles}">
-                            <a th:href="${article.articleUrl}" target="_blank" th:text="${article.articleTitle}"></a>
+<!--                        뉴스 내용-->
+                        <div class="card-body">
+                            <p th:text="${news.getContent() != null ? news.getContent() : '내용 없음'}"></p>
                         </div>
                     </div>
                 </div>
