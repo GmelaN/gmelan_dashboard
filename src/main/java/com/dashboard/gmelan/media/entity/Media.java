@@ -17,22 +17,23 @@ import java.sql.Timestamp;
 public class Media {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY")
+    @Column(name = "id", columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT")
     private long id;
 
     @Basic
-    @Column(name = "url", length = 50, columnDefinition = "VARCHAR(50) NOT NULL")
+    @Column(name = "url", columnDefinition = "VARCHAR(50) NOT NULL")
     private String url;
 
     @Basic
-    @Column(name = "type", length = 10, columnDefinition = "VARCHAR(10) NULL DEFAULT '분류 없음'")
+    @Column(name = "type", columnDefinition = "VARCHAR(10) NULL DEFAULT '분류 없음'")
     private String type;
 
     @Basic
-    @Column(name = "created_at", nullable = false, columnDefinition = "NOT NULL DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdAt;
 
     @Basic
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
     private Timestamp updatedAt;
+
 }

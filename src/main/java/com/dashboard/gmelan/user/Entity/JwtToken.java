@@ -14,10 +14,10 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "jwt_token", schema = "dashboard")
-public class JwtTokenEntity {
+public class JwtToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id", columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY")
+    @Column(name = "id", columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT")
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,14 +25,14 @@ public class JwtTokenEntity {
     private UserEntity userId;
 
     @Basic
-    @Column(name = "token", length = 255, nullable = false, unique = true)
+    @Column(name = "token", columnDefinition = "VARCHAR(255) NOT NULL UNIQUE")
     private String token;
 
     @Basic
-    @Column(name = "created_at", nullable = false, columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdAt;
 
     @Basic
-    @Column(name = "expire_at", nullable = false)
+    @Column(name = "expire_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp expireAt;
 }

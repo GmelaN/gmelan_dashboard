@@ -18,22 +18,23 @@ import java.sql.Timestamp;
 public class ReferenceMedia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY")
+    @Column(name = "id", columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT")
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reference_id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL")
+    @JoinColumn(name = "reference_id", columnDefinition = "BIGINT NOT NULL UNIQUE")
     private Reference reference;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "media_id", nullable = false, updatable = false, unique = false, columnDefinition = "BIGINT NOT NULL")
+    @JoinColumn(name = "media_id", columnDefinition = "BIGINT NOT NULL UNIQUE")
     private Media media;
 
     @Basic
-    @Column(name = "created_at", nullable = false, columnDefinition = "NOT NULL DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdAt;
 
     @Basic
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
     private Timestamp updatedAt;
+
 }

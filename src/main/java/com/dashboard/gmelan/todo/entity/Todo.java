@@ -19,19 +19,19 @@ import java.util.List;
 public class Todo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY")
+    @Column(name = "id", columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT")
     private long id;
 
     @Basic
-    @Column(name = "title", nullable = false, length = 30, columnDefinition = "VARCHAR(30) NOT NULL DEFAULT '제목'")
+    @Column(name = "title", columnDefinition = "VARCHAR(30) NOT NULL DEFAULT '제목'")
     private String title;
 
     @Basic
-    @Column(name = "content", columnDefinition = "TEXT NULL DEFAULT '내용 없음'")
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     @Basic
-    @Column(name = "url", length = 50, columnDefinition = "VARCHAR(50) NULL DEFAULT 'URL 없음")
+    @Column(name = "url", columnDefinition = "VARCHAR(50) NULL DEFAULT 'URL 없음'")
     private String url;
 
     @Basic
@@ -46,18 +46,18 @@ public class Todo {
     private String categoryName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL")
+    @JoinColumn(name = "user_id", columnDefinition = "BIGINT NOT NULL")
     private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "todo_category_id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "todo_category_id", columnDefinition = "BIGINT NOT NULL")
     private TodoCategory todoCategory;
 
-    @OneToMany(mappedBy = "Todo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL)
     private List<TodoMedia> todoMedia;
 
     @Basic
-    @Column(name = "created_at", nullable = false, columnDefinition = "NOT NULL DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdAt;
 
     @Basic
