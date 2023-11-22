@@ -96,7 +96,7 @@ public class TodoController {
             if(endTimestamp != null && endTimestamp.before(currentTimestamp)) category = "진행 완료"; // 종료가 현재보다 앞
             if(endTimestamp != null && endTimestamp.after(currentTimestamp)) category = "진행 중"; // 종료가 현재보다 뒤
         }
-        newTodo.setTodoCategoryEntity(todoService.getOrCreateCategory(category));
+        newTodo.setTodoCategory(todoService.getOrCreateCategory(category));
         
         // 만들어진 _todo 저장
         try {

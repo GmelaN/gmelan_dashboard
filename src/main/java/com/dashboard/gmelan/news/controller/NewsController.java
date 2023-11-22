@@ -10,7 +10,7 @@ import java.util.List;
 
 @Controller
 public class NewsController {
-    private NewsService newsService;
+    private final NewsService newsService;
     public NewsController() {
          this.newsService = new NewsService();
     }

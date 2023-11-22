@@ -1,5 +1,6 @@
-package com.dashboard.gmelan.todo.entity;
+package com.dashboard.gmelan.reference.entity;
 
+import com.dashboard.gmelan.media.entity.Media;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,28 +8,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "todo-category", schema = "dashboard")
-public class TodoCategory {
-    public TodoCategory(String name) {
-        this.name = name;
-    }
+@Table(name = "reference-media", schema = "dashboard")
+public class ReferenceMedia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY")
     private long id;
 
-    @Basic
-    @Column(name = "name", nullable = false, length = 20, unique = true, columnDefinition = "VARCHAR(20) NOT NULL UNIQUE DEFAULT '기본 분류'")
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reference_id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL")
+    private Reference reference;
 
-    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL)
-    private List<Todo> todos;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "media_id", nullable = false, updatable = false, unique = false, columnDefinition = "BIGINT NOT NULL")
+    private Media media;
 
     @Basic
     @Column(name = "created_at", nullable = false, columnDefinition = "NOT NULL DEFAULT CURRENT_TIMESTAMP")

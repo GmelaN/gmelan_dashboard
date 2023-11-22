@@ -1,10 +1,13 @@
 package com.dashboard.gmelan.todo.entity;
 
+import com.dashboard.gmelan.media.entity.Media;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -15,34 +18,22 @@ import lombok.Setter;
 public class TodoMedia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY")
     private long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "media_id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL")
+    private Media media;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "todo_id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL")
+    private Todo todo;
+
     @Basic
-    @Column(name = "media_id")
-    private long mediaId;
+    @Column(name = "created_at", nullable = false, columnDefinition = "NOT NULL DEFAULT CURRENT_TIMESTAMP")
+    private Timestamp createdAt;
+
     @Basic
-    @Column(name = "todo_id")
-    private long todoId;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TodoMedia that = (TodoMedia) o;
-
-        if (id != that.id) return false;
-        if (mediaId != that.mediaId) return false;
-        if (todoId != that.todoId) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (int) (mediaId ^ (mediaId >>> 32));
-        result = 31 * result + (int) (todoId ^ (todoId >>> 32));
-        return result;
-    }
+    @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
+    private Timestamp updatedAt;
 }

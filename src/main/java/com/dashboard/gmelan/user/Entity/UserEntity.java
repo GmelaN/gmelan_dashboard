@@ -19,62 +19,38 @@ import java.util.List;
 public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY")
     private long id;
-    @Basic
-    @Column(name = "permission_id")
+
+
+    @Column(name = "permission_id", nullable = false)
     private long permissionId;
+
     @Basic
-    @Column(name = "username")
+    @Column(name = "username", length = 15, columnDefinition = "VARCHAR(15) NOT NULL UNIQUE")
     private String username;
+
     @Basic
-    @Column(name = "password")
+    @Column(name = "password", length = 128, columnDefinition = "VARCHAR(128) NOT NULL ")
     private String password;
+
     @Basic
-    @Column(name = "email")
+    @Column(name = "email", length = 30, columnDefinition = "NOT NULL UNIQUE")
     private String email;
+
     @Basic
-    @Column(name = "created_at")
-    private Timestamp createdAt;
-    @Basic
-    @Column(name = "is_available")
+    @Column(name = "is_available", columnDefinition = "BOOLEAN NOT NULL DEFAULT true")
     private boolean isAvailable;
+
     @Basic
-    @Column(name = "type")
+    @Column(name = "type", length = 10, columnDefinition = "VARCHAR(10) NOT NULL DEFAULT 'IN_APP'")
     private String type;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private List<Todo> todos;
+    @Basic
+    @Column(name = "created_at", nullable = false, columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
+    private Timestamp createdAt;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        UserEntity that = (UserEntity) o;
-
-        if (id != that.id) return false;
-        if (permissionId != that.permissionId) return false;
-        if (isAvailable != that.isAvailable) return false;
-        if (username != null ? !username.equals(that.username) : that.username != null) return false;
-        if (password != null ? !password.equals(that.password) : that.password != null) return false;
-        if (email != null ? !email.equals(that.email) : that.email != null) return false;
-        if (createdAt != null ? !createdAt.equals(that.createdAt) : that.createdAt != null) return false;
-        if (type != null ? !type.equals(that.type) : that.type != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (int) (permissionId ^ (permissionId >>> 32));
-        result = 31 * result + (username != null ? username.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
-        result = 31 * result + (isAvailable ? 1 : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        return result;
-    }
+    @Basic
+    @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
+    private Timestamp updatedAt;
 }
