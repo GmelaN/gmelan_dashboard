@@ -22,9 +22,10 @@ repositories {
 }
 
 dependencies {
-	// DATABASE: MARIADB
+	// DATABASE: MARIADB -> MYSQL
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	implementation 'com.mysql:mysql-connector-j:8.1.0'
+//	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
 	// OAUTH
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'

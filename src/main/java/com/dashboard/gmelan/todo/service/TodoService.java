@@ -101,11 +101,11 @@ public class TodoService {
             todoRepository.delete(todoEntity);
 
             // 지운 놈의 카테고리를 갖는 _todo의 수를 조사
-            Long categoryCount = todoRepository.countByTodoCategoryEntity(todoEntity.getTodoCategoryEntity());
+            Long categoryCount = todoRepository.countByTodoCategoryEntity(todoEntity.getTodoCategory());
 
             // 더이상 그 카테고리가 필요하지 않는 경우 drop
             if (categoryCount == 0)
-                todoCategoryRepository.deleteById(todoEntity.getTodoCategoryEntity().getId());
+                todoCategoryRepository.deleteById(todoEntity.getTodoCategory().getId());
         }
         catch (Exception e) {
             return false;
@@ -133,10 +133,10 @@ public class TodoService {
         targetTodo.setUrl(updatedTodoEntity.getUrl());
 
         // 카테고리 업데이트
-        String category = updatedTodoEntity.getTodoCategoryEntity().getName();
+        String category = updatedTodoEntity.getTodoCategory().getName();
         
         TodoCategory categoryEntity = getOrCreateCategory(category);
-        targetTodo.setTodoCategoryEntity(categoryEntity);
+        targetTodo.setTodoCategory(categoryEntity);
 
         // 수정된 할 일 저장
         return todoRepository.save(targetTodo);

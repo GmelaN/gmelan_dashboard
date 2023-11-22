@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 @Entity
 @Getter
 @Setter
@@ -15,29 +17,18 @@ import lombok.Setter;
 public class UserPermissionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+    @Column(name = "id", columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY")
     private long id;
+
     @Basic
-    @Column(name = "permission")
+    @Column(name = "permission", length = 10, nullable = false, unique = true, columnDefinition = "VARCHAR(10) NOT NULL UNIQUE DEFAULT 'USER'")
     private String permission;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    @Basic
+    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
+    private Timestamp createdAt;
 
-        UserPermissionEntity that = (UserPermissionEntity) o;
-
-        if (id != that.id) return false;
-        if (permission != null ? !permission.equals(that.permission) : that.permission != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (permission != null ? permission.hashCode() : 0);
-        return result;
-    }
+    @Basic
+    @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
+    private Timestamp updatedAt;
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,71 +19,48 @@ import java.sql.Timestamp;
 public class Todo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY")
     private long id;
 
     @Basic
-    @Column(name = "title")
+    @Column(name = "title", nullable = false, length = 30, columnDefinition = "VARCHAR(30) NOT NULL DEFAULT '제목'")
     private String title;
+
     @Basic
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "TEXT NULL DEFAULT '내용 없음'")
     private String content;
+
     @Basic
-    @Column(name = "url")
+    @Column(name = "url", length = 50, columnDefinition = "VARCHAR(50) NULL DEFAULT 'URL 없음")
     private String url;
+
     @Basic
-    @Column(name = "start_date")
+    @Column(name = "start_date", columnDefinition = "TIMESTAMP NULL")
     private Timestamp startDate;
+
     @Basic
-    @Column(name = "end_date")
+    @Column(name = "end_date", columnDefinition = "TIMESTAMP NULL")
     private Timestamp endDate;
-    @Basic
-    @Column(name = "created_at")
-    private Timestamp createdAt;
-    @Basic
-    @Column(name = "updated_at")
-    private Timestamp updatedAt;
 
     @Transient
     private String categoryName;
 
-    @ManyToOne
-    @JoinColumn(name="user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL")
     private UserEntity user;
 
-    @ManyToOne
-    @JoinColumn(name="todo_category_id")
-    private TodoCategory todoCategoryEntity;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "todo_category_id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL")
+    private TodoCategory todoCategory;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    @OneToMany(mappedBy = "Todo", cascade = CascadeType.ALL)
+    private List<TodoMedia> todoMedia;
 
-        Todo that = (Todo) o;
+    @Basic
+    @Column(name = "created_at", nullable = false, columnDefinition = "NOT NULL DEFAULT CURRENT_TIMESTAMP")
+    private Timestamp createdAt;
 
-        if (id != that.id) return false;
-        if (title != null ? !title.equals(that.title) : that.title != null) return false;
-        if (content != null ? !content.equals(that.content) : that.content != null) return false;
-        if (startDate != null ? !startDate.equals(that.startDate) : that.startDate != null) return false;
-        if (endDate != null ? !endDate.equals(that.endDate) : that.endDate != null) return false;
-        if (url != null ? !url.equals(that.url) : that.url != null) return false;
-        if (user != null ? !user.equals(that.user) : that.user != null) return false;
-        if (todoCategoryEntity != null ? !todoCategoryEntity.equals(that.todoCategoryEntity) : that.todoCategoryEntity != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (content != null ? content.hashCode() : 0);
-        result = 31 * result + (startDate != null ? startDate.hashCode() : 0);
-        result = 31 * result + (endDate != null ? endDate.hashCode() : 0);
-        result = 31 * result + (url != null ? url.hashCode() : 0);
-        result = 31 * result + (user != null ? user.hashCode() : 0);
-        result = 31 * result + (todoCategoryEntity != null ? todoCategoryEntity.hashCode() : 0);
-        return result;
-    }
+    @Basic
+    @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
+    private Timestamp updatedAt;
 }

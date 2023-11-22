@@ -1,4 +1,4 @@
-package com.dashboard.gmelan.todo.entity;
+package com.dashboard.gmelan.media.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,28 +7,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "todo-category", schema = "dashboard")
-public class TodoCategory {
-    public TodoCategory(String name) {
-        this.name = name;
-    }
+@Table(name = "media", schema = "dashboard")
+public class Media {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY")
     private long id;
 
     @Basic
-    @Column(name = "name", nullable = false, length = 20, unique = true, columnDefinition = "VARCHAR(20) NOT NULL UNIQUE DEFAULT '기본 분류'")
-    private String name;
+    @Column(name = "url", length = 50, columnDefinition = "VARCHAR(50) NOT NULL")
+    private String url;
 
-    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL)
-    private List<Todo> todos;
+    @Basic
+    @Column(name = "type", length = 10, columnDefinition = "VARCHAR(10) NULL DEFAULT '분류 없음'")
+    private String type;
 
     @Basic
     @Column(name = "created_at", nullable = false, columnDefinition = "NOT NULL DEFAULT CURRENT_TIMESTAMP")

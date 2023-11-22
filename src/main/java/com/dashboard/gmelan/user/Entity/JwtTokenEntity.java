@@ -17,39 +17,22 @@ import java.sql.Timestamp;
 public class JwtTokenEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+    @Column(name = "id", columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY")
     private long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", columnDefinition = "BIGINT NOT NULL")
+    private UserEntity userId;
+
     @Basic
-    @Column(name = "user_id")
-    private long userId;
-    @Basic
-    @Column(name = "token")
+    @Column(name = "token", length = 255, nullable = false, unique = true)
     private String token;
+
     @Basic
-    @Column(name = "expire_at")
+    @Column(name = "created_at", nullable = false, columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
+    private Timestamp createdAt;
+
+    @Basic
+    @Column(name = "expire_at", nullable = false)
     private Timestamp expireAt;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        JwtTokenEntity that = (JwtTokenEntity) o;
-
-        if (id != that.id) return false;
-        if (userId != that.userId) return false;
-        if (token != null ? !token.equals(that.token) : that.token != null) return false;
-        if (expireAt != null ? !expireAt.equals(that.expireAt) : that.expireAt != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (int) (userId ^ (userId >>> 32));
-        result = 31 * result + (token != null ? token.hashCode() : 0);
-        result = 31 * result + (expireAt != null ? expireAt.hashCode() : 0);
-        return result;
-    }
 }
