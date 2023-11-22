@@ -13,22 +13,23 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "permission", schema = "dashboard")
-public class UserPermissionEntity {
+@Table(name = "user-permission", schema = "dashboard")
+public class UserPermission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id", columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY")
+    @Column(name = "id", columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT")
     private long id;
 
     @Basic
-    @Column(name = "permission", length = 10, nullable = false, unique = true, columnDefinition = "VARCHAR(10) NOT NULL UNIQUE DEFAULT 'USER'")
+    @Column(name = "permission", columnDefinition = "VARCHAR(10) NOT NULL UNIQUE DEFAULT 'USER'")
     private String permission;
 
     @Basic
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdAt;
 
     @Basic
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
     private Timestamp updatedAt;
+
 }

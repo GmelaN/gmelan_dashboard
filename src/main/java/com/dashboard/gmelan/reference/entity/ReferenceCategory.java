@@ -14,25 +14,26 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "reference-category", schema = "dashboard", catalog = "")
+@Table(name = "reference-category", schema = "dashboard")
 public class ReferenceCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id", nullable = false, updatable = false, unique = true, columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY")
+    @Column(name = "id", columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT")
     private long id;
 
     @Basic
-    @Column(name = "name")
+    @Column(name = "name", columnDefinition = "VARCHAR(20) NOT NULL UNIQUE DEFAULT '기본 분류'")
     private String name;
 
-    @OneToMany(mappedBy = "Reference")
+    @OneToMany(mappedBy = "referenceCategory", cascade = CascadeType.ALL)
     private List<Reference> references;
 
     @Basic
-    @Column(name = "created_at", nullable = false, columnDefinition = "NOT NULL DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdAt;
 
     @Basic
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
     private Timestamp updatedAt;
+
 }

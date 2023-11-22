@@ -67,7 +67,7 @@ public class TodoService {
         }
 
         // 그 다음 가져온 ID들을 기반으로 리스트를 조회한다.
-        result = todoRepository.findByUserIdAndTodoCategoryEntity(user.getId(), s);
+        result = todoRepository.findByUserIdAndTodoCategory(user.getId(), s);
         return result;
     }
 
@@ -101,7 +101,7 @@ public class TodoService {
             todoRepository.delete(todoEntity);
 
             // 지운 놈의 카테고리를 갖는 _todo의 수를 조사
-            Long categoryCount = todoRepository.countByTodoCategoryEntity(todoEntity.getTodoCategory());
+            Long categoryCount = todoRepository.countByTodoCategory(todoEntity.getTodoCategory());
 
             // 더이상 그 카테고리가 필요하지 않는 경우 drop
             if (categoryCount == 0)
@@ -116,27 +116,27 @@ public class TodoService {
 
     /* 할 일 수정하기 */
     @Transactional
-    public Todo updateTodo(Long taskId, Todo updatedTodoEntity) {
-        // 먼저 해당 todoEntity가 있는지 보자.
+    public Todo updateTodo(Long taskId, Todo updatedTodo) {
+        // 먼저 해당 todo가 있는지 보자.
         Todo targetTodo = todoRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Todo not found with id: " + taskId));
 
         // 날짜 범위의 유효성을 검사하자.
-        if(!isValidDate(updatedTodoEntity.getStartDate(), updatedTodoEntity.getEndDate()))
+        if(!isValidDate(updatedTodo.getStartDate(), updatedTodo.getEndDate()))
             throw new IllegalArgumentException("invalid date range detected.");
 
         // 가져온 할 일의 속성 변경 - userId는 제외
-        targetTodo.setTitle(updatedTodoEntity.getTitle());
-        targetTodo.setContent(updatedTodoEntity.getContent());
-        targetTodo.setStartDate(updatedTodoEntity.getStartDate());
-        targetTodo.setEndDate(updatedTodoEntity.getEndDate());
-        targetTodo.setUrl(updatedTodoEntity.getUrl());
+        targetTodo.setTitle(updatedTodo.getTitle());
+        targetTodo.setContent(updatedTodo.getContent());
+        targetTodo.setStartDate(updatedTodo.getStartDate());
+        targetTodo.setEndDate(updatedTodo.getEndDate());
+        targetTodo.setUrl(updatedTodo.getUrl());
 
         // 카테고리 업데이트
-        String category = updatedTodoEntity.getTodoCategory().getName();
+        String categoryString = updatedTodo.getTodoCategory().getName();
         
-        TodoCategory categoryEntity = getOrCreateCategory(category);
-        targetTodo.setTodoCategory(categoryEntity);
+        TodoCategory category = getOrCreateCategory(categoryString);
+        targetTodo.setTodoCategory(category);
 
         // 수정된 할 일 저장
         return todoRepository.save(targetTodo);
@@ -153,19 +153,19 @@ public class TodoService {
         }
 
         // 먼저 카테고리가 신규 카테고리인지 확인해보자.
-        TodoCategory categoryEntity = todoCategoryRepository.findByName(categoryName);
+        TodoCategory category = todoCategoryRepository.findByName(categoryName);
 
         // 신규 카테고리인 경우 null일 것임
-        if (categoryEntity == null) {
-            categoryEntity = new TodoCategory(categoryName);
+        if (category == null) {
+            category = new TodoCategory(categoryName);
 
             // 신규 카테고리를 카테고리 테이블에 저장
-            todoCategoryRepository.save(categoryEntity);
+            todoCategoryRepository.save(category);
 
-            categoryEntity = todoCategoryRepository.findByName(categoryName);
-            return categoryEntity;
+            category = todoCategoryRepository.findByName(categoryName);
+            return category;
         }
-        return categoryEntity;
+        return category;
     }
 
     /**

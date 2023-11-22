@@ -82,7 +82,7 @@
                   <td th:text="${todo.getTitle() != null ? todo.getTitle() : '제목 없음'}"></td>
                   <td th:text="${todo.getContent() != null ? todo.getContent() : '내용 없음'}"></td>
                   <td th:text="${todo.getUrl() != null ? todo.getUrl() : 'URL 없음'}"></td>
-                  <td th:text="${todo.getTodoCategoryEntity() != null ? todo.getTodoCategoryEntity().getName() : '카테고리 없음'}"></td>
+                  <td th:text="${todo.getTodoCategory() != null ? todo.getTodoCategory().getName() : '카테고리 없음'}"></td>
                   <td th:text="${todo.getStartDate() != null ? todo.getStartDate().toString() : '-'}"></td>
                   <td th:text="${todo.getEndDate() != null ? todo.getEndDate().toString() : '-'}"></td>
                   <td th:text="${todo.getCreatedAt() != null ? todo.getCreatedAt().toString() : '-'}"></td>
