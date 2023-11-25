@@ -40,6 +40,11 @@ public class TodoService {
         return activeTodos;
     }
 
+    @Transactional
+    public Todo getTodoById(Long taskId) {
+        return todoRepository.getReferenceById(taskId);
+    }
+
     @Transactional(readOnly=true)
     public List<Todo> getStaticTodos(UserEntity user) {
         List<Todo> staticTodos = todoRepository.findByUserIdAndStartDateIsNullAndEndDateIsNull(user.getId());
@@ -137,6 +142,8 @@ public class TodoService {
         
         TodoCategory category = getOrCreateCategory(categoryString);
         targetTodo.setTodoCategory(category);
+
+        targetTodo.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         // 수정된 할 일 저장
         return todoRepository.save(targetTodo);

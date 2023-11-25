@@ -45,7 +45,7 @@ public class Todo {
     @Transient
     private String categoryName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", columnDefinition = "BIGINT NOT NULL")
     private UserEntity user;
 
@@ -53,7 +53,7 @@ public class Todo {
     @JoinColumn(name = "todo_category_id", columnDefinition = "BIGINT NOT NULL")
     private TodoCategory todoCategory;
 
-    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<TodoMedia> todoMedia;
 
     @Basic

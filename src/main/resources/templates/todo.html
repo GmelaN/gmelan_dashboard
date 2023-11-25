@@ -5,15 +5,102 @@
     function deleteTodo(taskId) {
       const url = `/todos/delete/${taskId}`;
 
+      // CSRF token
+      const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+      const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+
       fetch(url, {
         method: 'DELETE',
+        headers: {
+          [csrfHeader]: csrfToken,
+        }
       })
               .then(response => {
                 if (response.ok) {
                   console.log('Todo deleted successfully');
+                  location.reload();
                 } else {
                   console.log(response);
                   console.error('Failed to delete todoEntity');
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+              });
+    }
+
+
+    // Todo 수정 폼 표시 함수
+    function editTodoForm(taskId) {
+      // 해당 Todo의 데이터 가져오기
+      const todoTitle = document.getElementById(`title-${taskId}`).innerText;
+      const todoContent = document.getElementById(`content-${taskId}`).innerText;
+      const todoUrl = document.getElementById(`url-${taskId}`).innerText;
+      const todoCreateDate = document.getElementById(`createdAt-${taskId}`).innerText;
+      const todoStartDate = document.getElementById(`startDate-${taskId}`).innerText;
+      const todoEndDate = document.getElementById(`endDate-${taskId}`).innerText;
+      const todoCategory = document.getElementById(`category-${taskId}`).innerText;
+
+      // 수정 폼으로 변환
+      const form = `
+      <td><input type="text" required id="editedTitle-${taskId}" value="${todoTitle}"></td>
+      <td><input type="text" id="editedContent-${taskId}" value="${todoContent}"></td>
+      <td><input type="text" id="editedUrl-${taskId}" value="${todoUrl}"></td>
+      <td><input type="text" id="editedCategory-${taskId}" value="${todoCategory}"></td>
+      <td>${todoCreateDate}</td>
+      <td><input type="date" id="editedStartDate-${taskId}" value="${todoStartDate}"></td>
+      <td><input type="date" id="editedEndDate-${taskId}" value="${todoEndDate}"></td>
+      <td>
+        <button class="btn btn-success" onclick="updateTodo(${taskId})">수정 완료</button>
+      </td>
+    `;
+
+      // 기존 데이터 대신 수정 폼으로 교체
+      document.getElementById(`row-${taskId}`).innerHTML = form;
+    }
+
+    // Todo 수정 함수
+    function updateTodo(taskId) {
+      // 수정된 데이터 가져오기
+      const editedTitle = document.getElementById(`editedTitle-${taskId}`).value;
+      const editedContent = document.getElementById(`editedContent-${taskId}`).value;
+      const editedUrl = document.getElementById(`editedUrl-${taskId}`).value;
+      const editedCategory = document.getElementById(`editedCategory-${taskId}`).value;
+      const editedStartDate = document.getElementById(`editedStartDate-${taskId}`).value;
+      const editedEndDate = document.getElementById(`editedEndDate-${taskId}`).value;
+
+      // 수정된 데이터를 서버로 전송
+      const url = `/todos/update/${taskId}`;
+
+      // CSRF 토큰 얻기
+      const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+      const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+      fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          [csrfHeader]: csrfToken, // CSRF 토큰을 헤더에 추가
+        },
+        body: JSON.stringify({
+          taskId: taskId,
+          title: editedTitle,
+          content: editedContent,
+          url: editedUrl,
+          category: editedCategory,
+          startDate: editedStartDate,
+          endDate: editedEndDate,
+        }),
+      })
+              .then(response => {
+                if (response.ok) {
+                  console.log('Todo updated successfully');
+                  // 페이지 리로드
+                  location.reload();
+                } else {
+                  console.log(response);
+                  console.error('Failed to update todoEntity');
                 }
               })
               .catch(error => {
@@ -28,7 +115,7 @@
 
   <div class="container-fluid">
     <!-- Add Todo_ Form -->
-    <form th:action="@{/todos/{userId}/createTodo(userId=${userId})}" method="post">
+    <form th:action="@{/todos/create}" method="post">
       <label for="title">할 일 제목:</label>
       <input type="text" id="title" name="title" required>
 
@@ -74,21 +161,21 @@
                 </thead>
                 <tbody>
                 <tr th:if="${#lists.isEmpty(todoList)}">
-                  <!-- todo: 입력값이 NULL인 경우 처리-->
                   <td colspan="4">할 일이 없습니다.</td>
                 </tr>
 
-                <tr th:each="todo : ${todoList}">
-                  <td th:text="${todo.getTitle() != null ? todo.getTitle() : '제목 없음'}"></td>
-                  <td th:text="${todo.getContent() != null ? todo.getContent() : '내용 없음'}"></td>
-                  <td th:text="${todo.getUrl() != null ? todo.getUrl() : 'URL 없음'}"></td>
-                  <td th:text="${todo.getTodoCategory() != null ? todo.getTodoCategory().getName() : '카테고리 없음'}"></td>
-                  <td th:text="${todo.getStartDate() != null ? todo.getStartDate().toString() : '-'}"></td>
-                  <td th:text="${todo.getEndDate() != null ? todo.getEndDate().toString() : '-'}"></td>
-                  <td th:text="${todo.getCreatedAt() != null ? todo.getCreatedAt().toString() : '-'}"></td>
+                <tr th:id="'row-' + ${todo.getId()}" th:each="todo : ${todoList}">
+                  <td th:id="'title-' + ${todo.getId()}" th:text="${todo.getTitle() != null ? todo.getTitle() : '제목 없음'}"></td>
+                  <td th:id="'content-' + ${todo.getId()}" th:text="${todo.getContent() != null ? todo.getContent() : '내용 없음'}"></td>
+                  <td th:id="'url-' + ${todo.getId()}" th:text="${todo.getUrl() != null ? todo.getUrl() : 'URL 없음'}"></td>
+                  <td th:id="'category-' + ${todo.getId()}" th:text="${todo.getTodoCategory() != null ? todo.getTodoCategory().getName() : '카테고리 없음'}"></td>
+                  <td th:id="'createdAt-' + ${todo.getId()}" th:text="${todo.getCreatedAt() != null ? todo.getCreatedAt().toString() : '-'}"></td>
+                  <td th:id="'startDate-' + ${todo.getId()}" th:text="${todo.getStartDate() != null ? todo.getStartDate().toString() : '-'}"></td>
+                  <td th:id="'endDate-' + ${todo.getId()}" th:text="${todo.getEndDate() != null ? todo.getEndDate().toString() : '-'}"></td>
 
                   <td>
-                    <button class="btn btn-danger" th:onclick="'deleteTodo('+ ${todo.getId()} + ')'">삭제</button>
+                    <button class="btn btn-danger"  th:onclick="'deleteTodo('+ ${todo.getId()} + ')'">삭제</button>
+                    <button class="btn btn-warning" th:onclick="'editTodoForm(' + ${todo.getId()} + ')'">수정</button>
                   </td>
                 </tr>
                 </tbody>
