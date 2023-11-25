@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -21,26 +22,26 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(
                         (authorizeHttpRequests) -> authorizeHttpRequests
-                            .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
                 )
                 .headers(
                         (headers) -> headers
-                            .addHeaderWriter(
-                                    new XFrameOptionsHeaderWriter(
-                                        XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN
-                                    )
-                        )
+                                .addHeaderWriter(
+                                        new XFrameOptionsHeaderWriter(
+                                                XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN
+                                        )
+                                )
                 )
                 .formLogin(
                         (formLogin) -> formLogin
-                            .loginPage("/user/login")
-                            .defaultSuccessUrl("/")
+                                .loginPage("/user/login")
+                                .defaultSuccessUrl("/")
                 )
                 .logout(
                         (logout) -> logout
-                            .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-                            .logoutSuccessUrl("/")
-                            .invalidateHttpSession(true)
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+                                .logoutSuccessUrl("/")
+                                .invalidateHttpSession(true)
                 )
         ;
         return http.build();

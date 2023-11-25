@@ -1,11 +1,18 @@
 package com.dashboard.gmelan.todo.controller;
 
 import com.dashboard.gmelan.todo.entity.Todo;
+import com.dashboard.gmelan.todo.entity.TodoCategory;
 import com.dashboard.gmelan.user.Entity.UserEntity;
 import com.dashboard.gmelan.user.service.UserService;
 import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +32,7 @@ import java.util.List;
  * @see <a href="velog.com/gmelan">author's blog</a>
  */
 @Controller
+@RequestMapping("/todos")
 public class TodoController {
     private final TodoService todoService;
     private final UserService userService;
@@ -34,23 +42,33 @@ public class TodoController {
         this.userService = userService;
     }
 
-
     // _todo 페이지
-    @GetMapping("/todos/{userId}")
-    public String showTodoPage(@PathVariable Long userId, Model model) {
-        UserEntity user = userService.findByUserId(userId);
+    @GetMapping("/list")
+    public String showTodoPage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        if(userDetails == null) {
+            return "redirect:/user/login";
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        UserEntity user = userService.findByUsername(username);
+
+        if(user == null) {
+            return "error";
+        }
+
         List<Todo> todoEntityList = todoService.getAllTodos(user);
 
         model.addAttribute("todoList", todoEntityList);
-        model.addAttribute("userId", userId);
+        model.addAttribute("userId", user.getId());
 
         return "todo";
     }
 
     // 새 할 일 만들기
-    @PostMapping("/todos/{userId}/createTodo")
+    @PostMapping("/create")
     public String createTodo(
-            @PathVariable Long userId,
+            @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam(name = "title") String title,
             @RequestParam(name = "content") String content,
             @RequestParam(name = "url") String url,
@@ -59,8 +77,19 @@ public class TodoController {
             @RequestParam(name = "category") String category
 
     ) {
-        UserEntity user = userService.findByUserId(userId);
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-mm-dd");
+        if(userDetails == null) {
+            return "redirect:/user/login";
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        UserEntity user = userService.findByUsername(username);
+
+        if(user == null) {
+            return "error";
+        }
+
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         // _Todo 엔티티에 파라미터 값들 대입
         Todo newTodo = new Todo();
@@ -105,11 +134,12 @@ public class TodoController {
             System.err.println("There was an error while creating new to-do task.");
             return "error";
         }
-        return "redirect:/todos/{userId}";
+        return "redirect:/todos/list";
     }
 
     // 모든 할 일 조회
-    @GetMapping("/todos/json/{userId}/all")
+    @GetMapping("/json/all")
+    @PreAuthorize("hasRole('ROLE_USER') and userService.findByUserId(#userId).username == principal.username")
     public ResponseEntity<List<Todo>> getAllTodosById(@PathVariable Long userId) {
         UserEntity user = userService.findByUserId(userId);
 
@@ -123,8 +153,21 @@ public class TodoController {
         }
     }
 
+    @GetMapping("/json/{taskId}")
+    public ResponseEntity<Todo> getTodoById(@PathVariable Long taskId) {
+        // TodoService를 사용하여 특정 ID의 할 일 항목을 가져옵니다.
+        Todo todo = todoService.getTodoById(taskId);
+
+        if (todo != null) {
+            return new ResponseEntity<>(todo, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     // 진행 중인 할 일 조회
-    @GetMapping("/todos/json/{userId}/active")
+    @GetMapping("/json/active")
+    @PreAuthorize("hasRole('ROLE_USER') and userService.findByUserId(#userId).username == principal.username")
     public ResponseEntity<List<Todo>> getActiveTodosById(@PathVariable Long userId) {
         UserEntity user = userService.findByUserId(userId);
 
@@ -139,7 +182,8 @@ public class TodoController {
     }
 
     // 정적 할 일 조회
-    @GetMapping("/todos/json/{userId}/static")
+    @GetMapping("/json/static")
+    @PreAuthorize("hasRole('ROLE_USER') and userService.findByUserId(#userId).username == principal.username")
     public ResponseEntity<List<Todo>> getStaticTodosById(@PathVariable Long userId) {
         UserEntity user = userService.findByUserId(userId);
 
@@ -154,7 +198,8 @@ public class TodoController {
     }
 
     // 완료한 할 일 조회
-    @GetMapping("/todos/json/{userId}/completed")
+    @GetMapping("/json/completed")
+    @PreAuthorize("hasRole('ROLE_USER') and userService.findByUserId(#userId).username == principal.username")
     public ResponseEntity<List<Todo>> getCompletedTodosById(@PathVariable Long userId) {
         UserEntity user = userService.findByUserId(userId);
 
@@ -169,7 +214,8 @@ public class TodoController {
     }
     
     // 카테고리별 할 일 조회
-    @GetMapping("/todos/json/{userId}/{category}")
+    @GetMapping("/json/category?categoryName={category}")
+    @PreAuthorize("hasRole('ROLE_USER') and userService.findByUserId(#userId).username == principal.username")
     public ResponseEntity<List<Todo>> getTodosbyIdAndCategory(@PathVariable Long userId, @PathVariable String category) {
         UserEntity user = userService.findByUserId(userId);
 
@@ -182,26 +228,54 @@ public class TodoController {
         }
     }
 
-    // todo: 권한 확인 필요
-    @PutMapping("/todos/update/{taskId}")
-    public ResponseEntity<Todo> updateTodo(@PathVariable Long taskId, Todo updatedTodoEntity) {
+    @PutMapping("/update/{taskId}")
+    public ResponseEntity<Todo> updateTodo(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long taskId,
+            @RequestBody Todo updatedTodoEntity
+    ) {
+        if(userDetails == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        UserEntity user = userService.findByUsername(username);
+
+        if(user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        updatedTodoEntity.setTodoCategory(new TodoCategory(updatedTodoEntity.getCategoryName()));
         // TODO: 사용자 권한 검사
         Todo result = todoService.updateTodo(taskId, updatedTodoEntity);
 
         // 업데이트 실패 시
-        if(result == null) {
-            System.err.println("update to-do failed. updateTodo returned null.");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+//        if(result == null) {
+//            System.err.println("update to-do failed. updateTodo returned null.");
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     // todo: 권한 확인 필요
-    @DeleteMapping("/todos/delete/{taskId}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable Long taskId) {
-        // TODO: userId로 현재 로그인 한 사용자가 맞는지 검사
-        // TODO: 403 forbidden 에러 처리
+    @DeleteMapping("/delete/{taskId}")
+    public ResponseEntity<Void> deleteTodo(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long taskId
+    ) {
+        if(userDetails == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        UserEntity user = userService.findByUsername(username);
+
+        if(user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         boolean isDeleted = todoService.deleteTodo(taskId);
         if (isDeleted) {
