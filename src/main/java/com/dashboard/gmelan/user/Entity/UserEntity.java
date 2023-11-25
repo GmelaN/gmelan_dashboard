@@ -20,11 +20,11 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", columnDefinition = "BIGINT NOT NULL AUTO_INCREMENT")
-    private long id;
+    private Long id;
 
 
     @Column(name = "permission_id", nullable = false)
-    private long permissionId;
+    private Long permissionId;
 
     @Basic
     @Column(name = "username", columnDefinition = "VARCHAR(15) NOT NULL UNIQUE")
@@ -40,7 +40,7 @@ public class UserEntity {
 
     @Basic
     @Column(name = "is_available", columnDefinition = "BOOLEAN NOT NULL DEFAULT true")
-    private boolean isAvailable;
+    private Boolean isAvailable;
 
     @Basic
     @Column(name = "type", columnDefinition = "VARCHAR(10) NOT NULL DEFAULT 'IN_APP'")

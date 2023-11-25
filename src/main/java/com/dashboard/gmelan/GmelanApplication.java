@@ -6,8 +6,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 public class GmelanApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(GmelanApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(GmelanApplication.class, args);
+    }
 
 }
