@@ -2,12 +2,11 @@ package com.dashboard.gmelan.user.service;
 
 
 import com.dashboard.gmelan.user.Entity.UserEntity;
+import com.dashboard.gmelan.user.enums.UserPermission;
 import com.dashboard.gmelan.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
 
 @Service
 @RequiredArgsConstructor
@@ -15,17 +14,17 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserEntity create(String username, String email, String password, String type) {
-        // verify length
-        UserEntity user = new UserEntity();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setType(type);
-        user.setCreatedAt(new Timestamp(20200101));
+    public UserEntity create(String username, String email, String password, String provider) {
+        String encryptedPassword = passwordEncoder.encode(password);
 
-//        String encryptedPassword = passwordEncoder.encode(password);
-//        user.setPassword(encryptedPassword);
-        user.setPassword(password);
+        UserEntity user = UserEntity.builder()
+                .username(username)
+                .password(encryptedPassword)
+                .email(email)
+                .provider(provider)
+                .isAvailable(true)
+                .type(UserPermission.USER)
+                .build();
 
         this.userRepository.save(user);
 
@@ -35,5 +34,8 @@ public class UserService {
     public UserEntity findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-    public UserEntity findByUserId(long userId) { return userRepository.findById(userId); }
+
+    public UserEntity findByUserId(long userId) {
+        return userRepository.findById(userId);
+    }
 }
