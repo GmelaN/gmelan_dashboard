@@ -1,4 +1,4 @@
-package com.dashboard.gmelan.user.controller;
+package com.dashboard.gmelan.controller;
 
 import com.dashboard.gmelan.user.config.UserCreationForm;
 import com.dashboard.gmelan.user.service.UserService;

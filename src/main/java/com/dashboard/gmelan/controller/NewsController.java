@@ -1,4 +1,4 @@
-package com.dashboard.gmelan.news.controller;
+package com.dashboard.gmelan.controller;
 
 import com.dashboard.gmelan.news.entity.News;
 import com.dashboard.gmelan.news.service.NewsService;

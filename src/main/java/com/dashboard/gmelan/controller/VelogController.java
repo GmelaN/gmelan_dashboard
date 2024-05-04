@@ -1,12 +1,10 @@
-package com.dashboard.gmelan.velog.controller;
+package com.dashboard.gmelan.controller;
 
 import com.dashboard.gmelan.velog.service.VelogService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/velog")
