@@ -1,7 +1,7 @@
 package com.dashboard.gmelan.controller;
 
-import com.dashboard.gmelan.news.entity.News;
-import service.NewsService;
+import com.dashboard.gmelan.entity.News;
+import com.dashboard.gmelan.service.NewsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

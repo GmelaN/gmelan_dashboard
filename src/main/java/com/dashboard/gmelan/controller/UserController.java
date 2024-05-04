@@ -1,7 +1,7 @@
 package com.dashboard.gmelan.controller;
 
-import com.dashboard.gmelan.user.config.UserCreationForm;
-import service.UserService;
+import com.dashboard.gmelan.config.UserCreationForm;
+import com.dashboard.gmelan.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;

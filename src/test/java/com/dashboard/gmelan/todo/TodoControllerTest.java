@@ -1,11 +1,11 @@
 package com.dashboard.gmelan;
 
 
-import com.dashboard.gmelan.todo.entity.Todo;
-import com.dashboard.gmelan.todo.repository.TodoCategoryRepository;
-import service.TodoService;
-import com.dashboard.gmelan.user.Entity.UserEntity;
-import service.UserService;
+import com.dashboard.gmelan.entity.Todo;
+import com.dashboard.gmelan.repository.TodoCategoryRepository;
+import com.dashboard.gmelan.service.TodoService;
+import com.dashboard.gmelan.entity.UserEntity;
+import com.dashboard.gmelan.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.dashboard.gmelan.controller;
 
-import service.VelogService;
+import com.dashboard.gmelan.service.VelogService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

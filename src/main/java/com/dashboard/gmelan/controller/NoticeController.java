@@ -1,7 +1,7 @@
 package com.dashboard.gmelan.controller;
 
-import com.dashboard.gmelan.notice.entity.Notice;
-import service.NoticeService;
+import com.dashboard.gmelan.entity.Notice;
+import com.dashboard.gmelan.service.NoticeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
