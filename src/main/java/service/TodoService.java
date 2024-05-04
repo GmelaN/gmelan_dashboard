@@ -1,4 +1,4 @@
-package com.dashboard.gmelan.todo.service;
+package service;
 
 import com.dashboard.gmelan.todo.entity.TodoCategory;
 import com.dashboard.gmelan.todo.entity.Todo;

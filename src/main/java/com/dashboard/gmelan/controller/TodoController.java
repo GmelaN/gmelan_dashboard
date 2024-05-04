@@ -1,13 +1,11 @@
-package com.dashboard.gmelan.todo.controller;
+package com.dashboard.gmelan.controller;
 
 import com.dashboard.gmelan.todo.entity.Todo;
 import com.dashboard.gmelan.todo.entity.TodoCategory;
 import com.dashboard.gmelan.user.Entity.UserEntity;
-import com.dashboard.gmelan.user.service.UserService;
-import org.apache.catalina.User;
+import service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import com.dashboard.gmelan.todo.service.TodoService;
+import service.TodoService;
 
 import java.sql.Timestamp;
 import java.text.ParseException;

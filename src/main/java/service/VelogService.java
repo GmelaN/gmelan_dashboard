@@ -1,4 +1,4 @@
-package com.dashboard.gmelan.velog.service;
+package service;
 
 import org.springframework.stereotype.Service;
 

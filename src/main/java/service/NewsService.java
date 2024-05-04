@@ -1,7 +1,6 @@
-package com.dashboard.gmelan.news.service;
+package service;
 
 import java.sql.Timestamp;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import com.dashboard.gmelan.news.entity.News;
@@ -19,7 +18,6 @@ import com.rometools.rome.io.SyndFeedInput;
 
 import java.io.StringReader;
 import java.util.List;
-import java.util.Locale;
 
 
 /**

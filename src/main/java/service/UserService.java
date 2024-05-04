@@ -1,4 +1,4 @@
-package com.dashboard.gmelan.user.service;
+package service;
 
 
 import com.dashboard.gmelan.user.Entity.UserEntity;

@@ -1,4 +1,4 @@
-package com.dashboard.gmelan.notice.service;
+package service;
 
 
 import java.sql.Timestamp;
